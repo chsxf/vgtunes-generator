@@ -2,7 +2,10 @@
 
 return [
     'dev' => [
-        'dashboard_url' => 'http://dashboard.vgtunes.chsxf.local:8080/'
+        'dashboard_url' => 'http://dashboard.vgtunes.chsxf.local:8080/',
+        'twig' => [
+            'debug' => true
+        ]
     ],
 
     'prod' => [

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{ album.name }}
+			-
+			{{ album.artist }}
+			| VGTunes</title>
+		<link href="/css/style.css" rel="stylesheet"/>
+	</head>
+	<body class="album-page">
+		<div id="container">
+			<div id="cover" style="background-image: url('{{ cover }}')"></div>
+			<div id="infos">
+				<h1>{{ album.name }}</h1>
+				<h2>{{ album.artist }}</h2>
+			</div>
+			{% if album.instances is not empty %}
+				<ul id="links">
+					{% for platform, platformUrl in album.instances %}
+						<li class="platform platform-{{ platform }}" data-url="{{ platformUrl }}">Listen</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</div>
+	</body>
+</html>

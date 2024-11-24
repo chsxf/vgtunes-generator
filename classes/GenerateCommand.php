@@ -6,6 +6,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\FilesystemLoader;
 
 #[AsCommand("generate", "Generate website content")]
 final class GenerateCommand extends Command
@@ -34,6 +37,22 @@ final class GenerateCommand extends Command
         $this->currentEnvironment = $this->environments[$environmentKey];
 
         $this->outputPath = $input->getArgument(self::OUTPUT_PATH);
+
+        $twigOptions = [
+            'cache' => 'twig_cache',
+            'auto_reload' => true,
+            'strict_variables' => true
+        ];
+        if (array_key_exists('twig', $this->currentEnvironment)) {
+            $twigOptions = array_merge($twigOptions, $this->currentEnvironment['twig']);
+        }
+
+        $loader = new FilesystemLoader('templates');
+        $twigEnvironment = new Environment($loader, $twigOptions);
+
+        if (!empty($twigOptions['debug'])) {
+            $twigEnvironment->addExtension(new DebugExtension());
+        }
 
         try {
             $output->writeln($this->getApplication()->getName());
@@ -64,7 +83,7 @@ final class GenerateCommand extends Command
                 $albumSlugFirstChar = $album['slug'][0];
                 $filePath = $this->buildOutputPath("/albums/{$albumSlugFirstChar}/{$album['slug']}.html");
                 $apg = new AlbumPageGenerator($album, $filePath);
-                if (!$apg->generate()) {
+                if (!$apg->generate($twigEnvironment)) {
                     throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
                 }
                 $output->writeln('<comment>OK</comment>');
