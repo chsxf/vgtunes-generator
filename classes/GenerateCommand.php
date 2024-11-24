@@ -44,11 +44,32 @@ final class GenerateCommand extends Command
             $output->writeln("  <comment>Environment: {$environmentKey}</comment>");
             $output->writeln('');
 
-            $output->write('<info>Fetching database JSON file...</info>');
+            $output->write('<info>Fetching database JSON file... </info>');
             $jsonData = $this->fetchJSON();
-            $output->writeln(' Done!');
+            $output->writeln('<comment>Done</comment>');
             $referenceCount = count($jsonData);
             $output->writeln("  {$referenceCount} references found");
+            $output->writeln('');
+
+            $output->writeln('<info>Generating album pages...</info>');
+            $output->write('  Clearing album pages folder... ');
+            $albumPagesFolder = $this->buildOutputPath('/albums');
+            if (!FileHelpers::clearFolder($albumPagesFolder)) {
+                throw new Exception("Unable to clear the album pages folder.");
+            }
+            $output->writeln('<comment>Done</comment>');
+
+            foreach ($jsonData as $album) {
+                $output->write("  Album: {$album['name']} ");
+                $albumSlugFirstChar = $album['slug'][0];
+                $filePath = $this->buildOutputPath("/albums/{$albumSlugFirstChar}/{$album['slug']}.html");
+                $apg = new AlbumPageGenerator($album, $filePath);
+                if (!$apg->generate()) {
+                    throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
+                }
+                $output->writeln('<comment>OK</comment>');
+            }
+            $output->writeln('');
 
             return Command::SUCCESS;
         } catch (Exception $e) {
@@ -76,5 +97,10 @@ final class GenerateCommand extends Command
     private function buildDashboardUrl(string $path): string
     {
         return "{$this->currentEnvironment['dashboard_url']}{$path}";
+    }
+
+    private function buildOutputPath(string $path): string
+    {
+        return "{$this->outputPath}{$path}";
     }
 }
