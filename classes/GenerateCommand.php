@@ -73,6 +73,14 @@ final class GenerateCommand extends Command
                 throw new Exception("Unable to generate search index.");
             }
             $output->writeln(' <comment>Done</comment>');
+
+            $output->write('<info>Generating home page...</info>');
+            $homePagePath = $this->buildOutputPath('/home.html');
+            $hg = new HomeGenerator($jsonData, $homePagePath);
+            if (!$hg->generate($twigEnvironment)) {
+                throw new Exception("Unable to generate home page.");
+            }
+            $output->writeln(' <comment>Done</comment>');
             $output->writeln('');
 
             $output->writeln('<info>Generating album pages...</info>');
@@ -84,10 +92,10 @@ final class GenerateCommand extends Command
             $output->writeln('<comment>Done</comment>');
 
             foreach ($jsonData as $album) {
-                $output->write("  Album: {$album['name']} ");
+                $output->write("  Album: {$album['title']} ");
                 $albumSlugFirstChar = $album['slug'][0];
                 $filePath = $this->buildOutputPath("/albums/{$albumSlugFirstChar}/{$album['slug']}.html");
-                $apg = new AlbumPageGenerator($album, $filePath);
+                $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
                 if (!$apg->generate($twigEnvironment)) {
                     throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
                 }
