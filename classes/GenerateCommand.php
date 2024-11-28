@@ -66,6 +66,15 @@ final class GenerateCommand extends Command
             $output->writeln("  {$referenceCount} references found");
             $output->writeln('');
 
+            $output->write('<info>Generating search index...</info>');
+            $searchIndexPath = $this->buildOutputPath('/searchIndex.json');
+            $sig = new SearchIndexGenerator($jsonData, $searchIndexPath, false, $environmentKey !== 'prod');
+            if (!$sig->generate()) {
+                throw new Exception("Unable to generate search index.");
+            }
+            $output->writeln(' <comment>Done</comment>');
+            $output->writeln('');
+
             $output->writeln('<info>Generating album pages...</info>');
             $output->write('  Clearing album pages folder... ');
             $albumPagesFolder = $this->buildOutputPath('/albums');
