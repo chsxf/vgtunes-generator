@@ -19,11 +19,6 @@ final class GenerateCommand extends Command
     private ?array $currentEnvironment = null;
     private ?string $outputPath = null;
 
-    function __construct(private array $environments)
-    {
-        parent::__construct();
-    }
-
     function configure()
     {
         $this
@@ -34,7 +29,8 @@ final class GenerateCommand extends Command
     function execute(InputInterface $input, OutputInterface $output): int
     {
         $environmentKey = $input->getOption(self::ENVIRONMENT);
-        $this->currentEnvironment = $this->environments[$environmentKey];
+        $envFilePath = "environments/env.{$environmentKey}.php";
+        $this->currentEnvironment = require_once($envFilePath);
 
         $this->outputPath = $input->getArgument(self::OUTPUT_PATH);
 
