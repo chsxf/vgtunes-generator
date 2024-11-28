@@ -31,7 +31,7 @@ final class SearchIndexGenerator
     private function remapAlbum(array $album): array
     {
         $artistIndex = array_search($album['artist'], $this->artistList) + 1;
-        $result = ['t' => $album['name'], 'a' => $artistIndex];
+        $result = ['t' => $album['title'], 'a' => $artistIndex];
         if ($this->includeInstances) {
             $result['i'] = $this->remapInstances($album['instances']);
         }

@@ -5,22 +5,22 @@
 		<meta name="description" content="Listen to this album on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
 
 		<meta property="og:site_name" content="VGTunes">
-		<meta property="og:title" content="{{ album.name }} - {{ album.artist }}">
+		<meta property="og:title" content="{{ album.title }} - {{ album.artist }}">
 		<meta property="og:image" content="{{ cover }}">
 		<meta property="og:url" content="{{ page_url }}">
 		<meta property="og:description" content="Listen to this album on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
 
 		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:title" content="{{ album.name }} - {{ album.artist }}">
+		<meta name="twitter:title" content="{{ album.title }} - {{ album.artist }}">
 		<meta name="twitter:description" content="Listen to this album on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
 		<meta name="twitter:image" content="{{ cover }}">
 		<meta name="twitter:url" content="{{ page_url }}">
 
-		<title>{{ album.name }}
+		<title>{{ album.title }}
 			-
 			{{ album.artist }}
 			| VGTunes</title>
-		<link href="/css/style.css" rel="stylesheet"/>
+		<link href="/css/album-style.css" rel="stylesheet"/>
 		<style type="text/css">
 			.with-cover-image {
 				background-image: url('{{ cover }}');
@@ -32,7 +32,7 @@
 		<div id="container">
 			<div id="cover" class="with-cover-image"></div>
 			<div id="infos">
-				<h1>{{ album.name }}</h1>
+				<h1>{{ album.title }}</h1>
 				<h2>{{ album.artist }}</h2>
 			</div>
 			{% if album.instances is not empty %}
