@@ -103,6 +103,22 @@ final class GenerateCommand extends Command
             }
             $output->writeln('');
 
+            $output->write('<info>Minification...</info>');
+            if (empty($this->currentEnvironment['minify'])) {
+                $output->writeln(' <comment>Skipped</comment>');
+            } else {
+                $output->writeln('');
+                $mm = new MinificationManager($this->buildOutputPath('/'));
+                $output->writeln('  Populating files to minify...');
+                $mm->populate($output);
+                $output->writeln('  Processing files...');
+                if (!$mm->process($output)) {
+                    throw new Exception('Unable to complete minification');
+                }
+                $output->writeln('  <comment>Minification Complete</comment>');
+            }
+            $output->writeln('');
+
             return Command::SUCCESS;
         } catch (Exception $e) {
             $output->writeln('');
