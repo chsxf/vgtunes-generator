@@ -76,7 +76,7 @@ final class GenerateCommand extends Command
 
             $output->write('<info>Generating home page...</info>');
             $homePagePath = $this->buildOutputPath('/home.html');
-            $hg = new HomeGenerator($this->currentEnvironment['base_url'], $jsonData, $homePagePath);
+            $hg = new HomeGenerator($jsonData, $homePagePath);
             if (!$hg->generate($twigEnvironment)) {
                 throw new Exception("Unable to generate home page.");
             }

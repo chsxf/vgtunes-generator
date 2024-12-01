@@ -4,7 +4,7 @@ use Twig\Environment;
 
 final class HomeGenerator
 {
-    public function __construct(private string $baseUrl, private array $jsonData, private string $path) {}
+    public function __construct(private array $jsonData, private string $path) {}
 
     public function generate(Environment $twigEnvironment): bool
     {
@@ -13,7 +13,7 @@ final class HomeGenerator
         });
         $latestAlbums = array_slice($this->jsonData, 0, 50);
 
-        $baseAlbumUrl = "{$this->baseUrl}albums/";
+        $baseAlbumUrl = "/albums/";
         $baseCoverUrl = "https://images.vgtunes.chsxf.dev/covers/";
 
         $generatedHtml = $twigEnvironment->render('home.twig', [
