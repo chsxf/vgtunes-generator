@@ -81,6 +81,14 @@ final class GenerateCommand extends Command
                 throw new Exception("Unable to generate home page.");
             }
             $output->writeln(' <comment>Done</comment>');
+
+            $output->write('<info>Generating cookie settings and privacy policy page...</info>');
+            $cookiePrivacyPath = $this->buildOutputPath('/cookie-settings-and-privacy-policy.html');
+            $cpg = new CookiePrivacyGenerator($jsonData, $cookiePrivacyPath);
+            if (!$cpg->generate($twigEnvironment)) {
+                throw new Exception("Unable to generate cookie settings and privacy policy page.");
+            }
+            $output->writeln(' <comment>Done</comment>');
             $output->writeln('');
 
             $output->writeln('<info>Generating album pages...</info>');
