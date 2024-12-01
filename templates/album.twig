@@ -20,14 +20,22 @@
 			-
 			{{ album.artist }}
 			| VGTunes</title>
+
+		<link rel="preload" href="/css/album-style.css" as="style"/>
+		<link rel="preload" href="/css/cookies-consent.css" as="style"/>
 		<link href="/css/album-style.css" rel="stylesheet"/>
+		<link href="/css/cookies-consent.css" rel="stylesheet"/>
 		<style type="text/css">
 			.with-cover-image {
 				background-image: url('{{ cover }}');
 			}
 		</style>
+
+		<script type="text/javascript" src="/js/analytics.js" defer></script>
 	</head>
 	<body class="album-page">
+		{{ include('cookies-consent.twig') }}
+
 		<div id="back-cover" class="with-cover-image"></div>
 		<div id="container">
 			<div id="cover" class="with-cover-image"></div>
@@ -47,7 +55,7 @@
 		</div>
 		<div id="footer">
 			<div class="logo">VGTunes</div>
-			<div class="legal">Legal blabla here</div>
+			<div class="legal">{{ include('legal-footer.twig') }}</div>
 		</div>
 	</body>
 </html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html charset="utf-8">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>VGTunes</title>
+		<meta name="descripton" content="Get links to your favorite video game soundtracks on Deezer, Spotify and Apple Music.">
+		<link rel="preload" href="/css/main-style.css" as="style"/>
+		<link rel="preload" href="/css/cookies-consent.css" as="style"/>
+		<link href="/css/main-style.css" rel="stylesheet"/>
+		<link href="/css/cookies-consent.css" rel="stylesheet"/>
+		<script type="text/javascript" src="js/search.js" defer></script>
+		<script type="text/javascript" src="js/analytics.js" defer></script>
+	</head>
+	<body>
+		<div id="main-container">
+			{{ include('cookies-consent.twig') }}
+
+			<div id="search-cancel"></div>
+
+			<div id="header">
+				<div class="column">
+					<div class="logo">
+						<a href="/">VGTunes</a>
+					</div>
+					<div class="search">
+						<img src="images/looking-glass.svg" class="looking-glass"/>
+						<input type="text" id="search-terms" placeholder="Loading search index..." disabled/>
+						<div id="results-dropdown">
+							<ul id="results-list">
+								<li class="no-result">No results found</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="main-section">
+				<h1>
+					{% block header %}{% endblock %}
+				</h1>
+
+				{% block content %}{% endblock %}
+			</div>
+
+			<div id="footer">
+				<div class="column">{{ include('legal-footer.twig') }}</div>
+			</div>
+		</div>
+	</body>
+</html>

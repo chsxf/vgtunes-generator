@@ -81,6 +81,14 @@ final class GenerateCommand extends Command
                 throw new Exception("Unable to generate home page.");
             }
             $output->writeln(' <comment>Done</comment>');
+
+            $output->write('<info>Generating cookie settings and privacy policy page...</info>');
+            $cookiePrivacyPath = $this->buildOutputPath('/cookie-settings-and-privacy-policy.html');
+            $cpg = new CookiePrivacyGenerator($jsonData, $cookiePrivacyPath);
+            if (!$cpg->generate($twigEnvironment)) {
+                throw new Exception("Unable to generate cookie settings and privacy policy page.");
+            }
+            $output->writeln(' <comment>Done</comment>');
             $output->writeln('');
 
             $output->writeln('<info>Generating album pages...</info>');
@@ -101,6 +109,17 @@ final class GenerateCommand extends Command
                 }
                 $output->writeln('<comment>OK</comment>');
             }
+            $output->writeln('');
+
+            $output->writeln('<info>Replacements...</info>');
+            $rm = new ReplacementsManager($this->buildOutputPath('/'), $this->currentEnvironment['replacements']);
+            $output->writeln('  Populating files to apply replacements...');
+            $rm->populate($output);
+            $output->writeln('  Processing files...');
+            if (!$rm->process($output)) {
+                throw new Exception('Unable to apply replacements');
+            }
+            $output->writeln('  <comment>Replacements Complete</comment>');
             $output->writeln('');
 
             $output->write('<info>Minification...</info>');

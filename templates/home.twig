@@ -1,50 +1,16 @@
-<!DOCTYPE html>
-<html charset="utf-8">
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>VGTunes</title>
-		<meta name="descripton" content="Get links to your favorite video game soundtracks on Deezer, Spotify and Apple Music.">
-		<link href="/css/main-style.css" rel="stylesheet"/>
-		<script type="text/javascript" src="js/home.js" defer></script>
-		<script type="text/javascript" src="js/search.js" defer></script>
-	</head>
-	<body>
-		<div id="main-container">
-			<div id="search-cancel"></div>
+{% extends 'main-pages-base.twig' %}
 
-			<div id="header">
-				<div class="column">
-					<div class="logo">VGTunes</div>
-					<div class="search">
-						<img src="images/looking-glass.svg" class="looking-glass"/>
-						<input type="text" id="search-terms" placeholder="Loading search index..." disabled/>
-						<div id="results-dropdown">
-							<ul id="results-list">
-								<li class="no-result">No results found</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
+{% block header %}
+	Latest Additions
+{% endblock %}
 
-			<div id="latest">
-				<h1>Latest Additions</h1>
-
-				<div class="flex-grid scrollview">
-					{% for album in latest_albums %}
-						{% set cover_url = "%s%s/cover_250.jpg"|format(base_cover_url, album.slug) %}
-						<div class="album" style="background-image: url('{{ cover_url }}')" data-url="{{ base_album_url }}{{ album.slug|first }}/{{ album.slug }}.html" title="{{ album.title }} - {{ album.artist }}">
-							<div class="blurry-background" style="background-image: url('{{ cover_url }}')"></div>
-						</div>
-					{% endfor %}
-				</div>
-			</div>
-
-			<div id="footer">
-				<div class="column">
-					Legal blabla here
-				</div>
-			</div>
-		</div>
-	</body>
-</html>
+{% block content %}
+	<div class="flex-grid scrollview">
+		{% for album in latest_albums %}
+			{% set cover_url = "%s%s/cover_250.jpg"|format(base_cover_url, album.slug) %}
+			<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug|first }}/{{ album.slug }}.html" title="{{ album.title }} - {{ album.artist }}">
+				<div class="blurry-background" style="background-image: url('{{ cover_url }}')"></div>
+			</a>
+		{% endfor %}
+	</div>
+{% endblock %}

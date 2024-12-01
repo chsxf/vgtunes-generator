@@ -1,0 +1,29 @@
+{% extends 'main-pages-base.twig' %}
+
+{% block header %}
+	Cookie Settings and Privacy Policy
+{% endblock %}
+
+{% block content %}
+	<div class="scrollview cookie-privacy">
+		<div class="column">
+			<h2>Privacy Policy</h2>
+			<p>
+				<span class="logo">VGTunes</span>
+				does not collect any personal data. We do not collect your IP address our any location data.</p>
+			<p>We monitor traffic on our website by using cookies that are stored exclusively on your side. This reduces accuracy on our side, but guarantees that your personal information is never shared with us.</p>
+			<p>
+				<span class="logo">VGTunes</span>
+				is hosted on
+				<a href="https://pages.github.com/" target="_blank">GitHub Pages</a>
+				and their own privacy policy may apply.</p>
+
+			<h2>Cookie Settings</h2>
+			<p>You can control whether you have consented to the use of cookies for traffic analysis with the checkbox below.</p>
+			<p class="cookie-consent-controls">
+				<input id="cookie-consent-checkbox" type="checkbox"/>
+				I consent to the use of cookies for traffic analysis on
+				<span class="logo">VGTunes</span>.</p>
+		</div>
+	</div>
+{% endblock %}
