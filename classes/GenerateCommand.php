@@ -111,6 +111,17 @@ final class GenerateCommand extends Command
             }
             $output->writeln('');
 
+            $output->writeln('<info>Replacements...</info>');
+            $rm = new ReplacementsManager($this->buildOutputPath('/'), $this->currentEnvironment['replacements']);
+            $output->writeln('  Populating files to apply replacements...');
+            $rm->populate($output);
+            $output->writeln('  Processing files...');
+            if (!$rm->process($output)) {
+                throw new Exception('Unable to apply replacements');
+            }
+            $output->writeln('  <comment>Replacements Complete</comment>');
+            $output->writeln('');
+
             $output->write('<info>Minification...</info>');
             if (empty($this->currentEnvironment['minify'])) {
                 $output->writeln(' <comment>Skipped</comment>');
