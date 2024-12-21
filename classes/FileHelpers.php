@@ -17,6 +17,9 @@ final class FileHelpers
                         closedir($dirHandle);
                         return false;
                     }
+                    if (!rmdir($filePath)) {
+                        return false;
+                    }
                 } else if (is_file($filePath)) {
                     if (!unlink($filePath)) {
                         closedir($dirHandle);

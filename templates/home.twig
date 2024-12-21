@@ -8,7 +8,7 @@
 	<div class="flex-grid scrollview">
 		{% for album in latest_albums %}
 			{% set cover_url = "%s%s/cover_250.jpg"|format(base_cover_url, album.slug) %}
-			<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug|first }}/{{ album.slug }}.html" title="{{ album.title }} - {{ album.artist }}">
+			<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug }}/" title="{{ album.title }} - {{ album.artist }}">
 				<div class="blurry-background" style="background-image: url('{{ cover_url }}')"></div>
 			</a>
 		{% endfor %}

@@ -101,8 +101,7 @@ final class GenerateCommand extends Command
 
             foreach ($jsonData as $album) {
                 $output->write("  Album: {$album['title']} ");
-                $albumSlugFirstChar = $album['slug'][0];
-                $filePath = $this->buildOutputPath("/albums/{$albumSlugFirstChar}/{$album['slug']}.html");
+                $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
                 $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
                 if (!$apg->generate($twigEnvironment)) {
                     throw new Exception("Unable to generate page album for slug '{$album['slug']}'");

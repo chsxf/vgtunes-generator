@@ -13,7 +13,7 @@ final class AlbumPageGenerator
             return false;
         }
 
-        $pageUrl = "{$this->baseUrl}albums/{$this->album['slug'][0]}/{$this->album['slug']}.html";
+        $pageUrl = "{$this->baseUrl}albums/{$this->album['slug']}/index.html";
         $coverUrl = "https://images.vgtunes.chsxf.dev/covers/{$this->album['slug']}/cover_500.jpg";
 
         $this->album['instances'] = $this->expandInstanceLinks($this->album['instances']);
