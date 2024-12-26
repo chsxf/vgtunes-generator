@@ -21,18 +21,18 @@
 			{{ album.artist }}
 			| VGTunes</title>
 
-		<link rel="preload" href="/css/album-style.css" as="style"/>
-		<link rel="preload" href="/css/cookies-consent.css" as="style"/>
-		<link href="/css/album-style.css" rel="stylesheet"/>
-		<link href="/css/cookies-consent.css" rel="stylesheet"/>
+		<link rel="preload" href="/css/album-style.css?t={{ generation_timestamp }}" as="style"/>
+		<link rel="preload" href="/css/cookies-consent.css?t={{ generation_timestamp }}" as="style"/>
+		<link href="/css/album-style.css?t={{ generation_timestamp }}" rel="stylesheet"/>
+		<link href="/css/cookies-consent.css?t={{ generation_timestamp }}" rel="stylesheet"/>
 		<style type="text/css">
 			.with-cover-image {
 				background-image: url('{{ cover }}');
 			}
 		</style>
 
-		<script type="text/javascript" src="/js/share.js" defer></script>
-		<script type="text/javascript" src="/js/analytics.js" defer></script>
+		<script type="text/javascript" src="/js/share.js?t={{ generation_timestamp }}" defer></script>
+		<script type="text/javascript" src="/js/analytics.js?t={{ generation_timestamp }}" defer></script>
 	</head>
 	<body class="album-page">
 		{{ include('cookies-consent.twig') }}

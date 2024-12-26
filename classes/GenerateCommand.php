@@ -45,6 +45,7 @@ final class GenerateCommand extends Command
 
         $loader = new FilesystemLoader('templates');
         $twigEnvironment = new Environment($loader, $twigOptions);
+        $twigEnvironment->addGlobal('generation_timestamp', time());
 
         if (!empty($twigOptions['debug'])) {
             $twigEnvironment->addExtension(new DebugExtension());
