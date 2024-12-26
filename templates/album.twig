@@ -44,7 +44,7 @@
 				<h1>{{ album.title }}</h1>
 				<h2>{{ album.artist }}</h2>
 
-				<a href="#" class="share-button" data-share-url="{{ page_url }}" data-share-text="{{ album.title }} - {{ album.artist }}"><img src="/images/share-icon.png"/></a>
+				<a href="#" class="shbtn" data-share-url="{{ page_url }}" data-share-text="{{ album.title }} - {{ album.artist }}"><img src="/images/share-icon.png"/></a>
 			</div>
 			{% if album.instances is not empty %}
 				<ul id="links">
