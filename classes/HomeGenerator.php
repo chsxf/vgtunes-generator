@@ -12,6 +12,7 @@ final class HomeGenerator
             return strcmp($b['created_at'], $a['created_at']);
         });
         $latestAlbums = array_slice($this->jsonData, 0, 50);
+        shuffle($latestAlbums);
 
         $baseAlbumUrl = "/albums/";
         $baseCoverUrl = "https://images.vgtunes.chsxf.dev/covers/";
