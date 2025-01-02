@@ -34,16 +34,17 @@
 			</div>
 
 			<div id="main-section">
-				<h1>
-					{% block header %}{% endblock %}
-				</h1>
+				<div id="top-bar-container">
+					<div class="column"> {% block header %}{% endblock %}
+						</div>
+					</div>
 
-				{% block content %}{% endblock %}
-			</div>
+					{% block content %}{% endblock %}
+				</div>
 
-			<div id="footer">
-				<div class="column">{{ include('legal-footer.twig') }}</div>
+				<div id="footer">
+					<div class="column">{{ include('legal-footer.twig') }}</div>
+				</div>
 			</div>
-		</div>
-	</body>
-</html>
+		</body>
+	</html>
