@@ -61,7 +61,7 @@ final class GenerateCommand extends Command
             $output->writeln('');
 
             $output->write('<info>Fetching database JSON file... </info>');
-            $jsonData = $this->fetchJSON();
+            $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
             $output->writeln('<comment>Done</comment>');
             $referenceCount = count($jsonData);
             $output->writeln("  {$referenceCount} references found");
@@ -146,10 +146,17 @@ final class GenerateCommand extends Command
         }
     }
 
-    private function fetchJSON(): array
+    private function fetchJSON(string $token): array
     {
         $url = $this->buildDashboardUrl('/JsonGenerator/generate');
-        $content = file_get_contents($url);
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_HTTPHEADER => ['VGTunes-Token: ' . base64_encode($token)],
+            CURLOPT_RETURNTRANSFER => true
+        ]);
+        $content = curl_exec($ch);
+        curl_close($ch);
         if ($content === false) {
             throw new Exception("Failed to fetch JSON file");
         }
