@@ -14,7 +14,7 @@ final class AlbumPageGenerator
         }
 
         $pageUrl = "{$this->baseUrl}albums/{$this->album['slug']}/";
-        $coverUrl = "https://images.vgtunes.chsxf.dev/covers/{$this->album['slug']}/cover_500.jpg";
+        $coverUrl = "https://images.vgtunes.chsxf.dev/covers/{$this->album['slug']}/cover_500.webp";
 
         $this->album['instances'] = $this->expandInstanceLinks($this->album['instances']);
 
