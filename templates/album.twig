@@ -21,15 +21,15 @@
 			{{ album.artist }}
 			| VGTunes</title>
 
-		<link rel="preload" href="/css/album-style.css?t={{ generation_timestamp }}" as="style"/>
-		<link href="/css/album-style.css?t={{ generation_timestamp }}" rel="stylesheet"/>
+		<link rel="preload" href="/css/album-style.css?t={{ git_hash_cache.getHash('css/album-style.css') }}" as="style"/>
+		<link href="/css/album-style.css?t={{ git_hash_cache.getHash('css/album-style.css') }}" rel="stylesheet"/>
 		<style type="text/css">
 			.with-cover-image {
 				background-image: url('{{ cover }}');
 			}
 		</style>
 
-		<script type="text/javascript" src="/js/share.js?t={{ generation_timestamp }}" defer></script>
+		<script type="text/javascript" src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
 
 		{{ include('common-head.twig') }}
 	</head>

@@ -45,7 +45,6 @@ final class GenerateCommand extends Command
 
         $loader = new FilesystemLoader('templates');
         $twigEnvironment = new Environment($loader, $twigOptions);
-        $twigEnvironment->addGlobal('generation_timestamp', time());
 
         if (!empty($twigOptions['debug'])) {
             $twigEnvironment->addExtension(new DebugExtension());
@@ -66,6 +65,14 @@ final class GenerateCommand extends Command
             $referenceCount = count($jsonData);
             $output->writeln("  {$referenceCount} references found");
             $output->writeln('');
+
+            $output->writeln('<info>Warming up git hashes cache...</info>');
+            $gitHashCache = new GitHashManager($this->buildOutputPath('/'));
+            if (!$gitHashCache->process($output)) {
+                throw new Exception('Unable to warm up git hashed cache');
+            }
+            $output->writeln(' <comment>Done</comment>');
+            $twigEnvironment->addGlobal('git_hash_cache', $gitHashCache);
 
             $output->write('<info>Generating search index...</info>');
             $searchIndexPath = $this->buildOutputPath('/searchIndex.json');

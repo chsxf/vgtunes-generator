@@ -8,25 +8,29 @@ abstract class AbstractFileBasedManager
     protected array $cssFiles = [];
     protected array $htmlFiles = [];
 
-    public function __construct(private string $basePath) {}
+    public function __construct(protected readonly string $basePath) {}
 
-    public final function populate(OutputInterface $output): bool
+    public final function populate(OutputInterface $output, bool $includeHtmlFiles = true): bool
     {
-        if (!$this->populatePath($this->basePath)) {
+        if (!$this->populatePath($this->basePath, $includeHtmlFiles)) {
             return false;
         }
 
         $output->writeln(sprintf("    Found %d JavaScript files", count($this->jsFiles)));
         $output->writeln(sprintf("    Found %d CSS files", count($this->cssFiles)));
-        $output->writeln(sprintf("    Found %d HTML files", count($this->htmlFiles)));
+        if ($includeHtmlFiles) {
+            $output->writeln(sprintf("    Found %d HTML files", count($this->htmlFiles)));
+        }
         return true;
     }
 
-    private function populatePath(string $path): bool
+    private function populatePath(string $path, bool $includeHtmlFiles): bool
     {
         if (!is_dir($path) || ($dir = opendir($path)) === false) {
             return false;
         }
+
+        $regex = $includeHtmlFiles ? '/\.(js|css|html)$/' : '/\.(js|css)$/';
 
         while (($file = readdir($dir)) !== false) {
             if (preg_match('/^\./', $file)) {
@@ -35,11 +39,11 @@ abstract class AbstractFileBasedManager
 
             $fullPath = "{$path}/{$file}";
             if (is_dir($fullPath)) {
-                if (!$this->populatePath($fullPath)) {
+                if (!$this->populatePath($fullPath, $includeHtmlFiles)) {
                     closedir($dir);
                     return false;
                 }
-            } else if (preg_match('/\.(js|css|html)$/', $file, $regs) && !preg_match('/\.min\.(js|css)$/', $file)) {
+            } else if (preg_match($regex, $file, $regs) && !preg_match('/\.min\.(js|css)$/', $file)) {
                 switch ($regs[1]) {
                     case 'js':
                         $this->jsFiles[] = $fullPath;
