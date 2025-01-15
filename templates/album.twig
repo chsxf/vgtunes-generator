@@ -36,7 +36,20 @@
 	<body class="album-page">
 		{{ include('cookies-consent.twig') }}
 
-		<div id="back-cover" class="with-cover-image"></div>
+		<div id="back-cover" class="with-cover-image">
+			<a href="/" class="back-button hidden">Test</a>
+		</div>
+		<div id="header">
+			<div class="logo">
+				<a href="/"><img src="/images/logo-icon-white-128px.png"/>
+					VGTunes</a>
+			</div>
+
+			<div class="back-button hidden">
+				<a href="/">&larr; Back</a>
+			</div>
+		</div>
+
 		<div id="container">
 			<div id="cover" class="with-cover-image"></div>
 			<div id="infos">
@@ -62,5 +75,21 @@
 		</div>
 
 		<div id="copied-to-clipboard-toast">Link copied to clipboard.</div>
+
+		<script type="text/javascript">
+			(function () {
+if (document.referrer) {
+const currentHost = document.location.host;
+const refererrerURL = new URL(document.referrer);
+console.log(currentHost, refererrerURL.host == currentHost);
+if (refererrerURL.host == currentHost) {
+const backButtonElements = document.getElementsByClassName("back-button");
+for (let button of backButtonElements) {
+button.classList.remove("hidden");
+}
+}
+}
+})();
+		</script>
 	</body>
 </html>
