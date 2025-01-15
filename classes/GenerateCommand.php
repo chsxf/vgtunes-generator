@@ -76,7 +76,8 @@ final class GenerateCommand extends Command
 
             $output->write('<info>Generating search index...</info>');
             $searchIndexPath = $this->buildOutputPath('/searchIndex.json');
-            $sig = new SearchIndexGenerator($jsonData, $searchIndexPath, false, $environmentKey !== 'prod');
+            $prettyPrint = $this->currentEnvironment['search_index_pretty_print'] ?? false;
+            $sig = new SearchIndexGenerator($jsonData, $searchIndexPath, false, $prettyPrint);
             if (!$sig->generate()) {
                 throw new Exception("Unable to generate search index.");
             }
