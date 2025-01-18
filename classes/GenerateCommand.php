@@ -15,7 +15,10 @@ final class GenerateCommand extends Command
 {
     private const OUTPUT_PATH = 'output_path';
     private const ENVIRONMENT = 'environment';
+    private const DASHBOARD_EXPORT = 'dashboard-export';
     private const CSS_ONLY = 'css-only';
+    private const SKIP_ALBUMS = 'skip-albums';
+    private const SKIP_CATALOG = 'skip-catalog';
     private const SKIP_MINIFY = 'skip-minify';
     private const PRETTY_SEARCH_INDEX = 'pretty-search-index';
 
@@ -27,7 +30,10 @@ final class GenerateCommand extends Command
         $this
             ->addArgument(self::OUTPUT_PATH, InputArgument::REQUIRED, "Output path for the generate files")
             ->addOption(self::ENVIRONMENT, null, InputOption::VALUE_REQUIRED, 'Environment', 'dev')
+            ->addOption(self::DASHBOARD_EXPORT, null, InputOption::VALUE_REQUIRED, "Uses the specified dashboard export file")
             ->addOption(self::CSS_ONLY, description: "Generates CSS files only")
+            ->addOption(self::SKIP_ALBUMS, description: "Skips generating album pages")
+            ->addOption(self::SKIP_CATALOG, description: "Skips generating catalog pages")
             ->addOption(self::SKIP_MINIFY, description: "Skips minification")
             ->addOption(self::PRETTY_SEARCH_INDEX, description: "Generates a JSON search index with the 'pretty print' setting");
     }
@@ -74,9 +80,21 @@ final class GenerateCommand extends Command
             $output->writeln('');
 
             if (!$input->getOption(self::CSS_ONLY)) {
-                $output->write('<info>Fetching database JSON file... </info>');
-                $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
-                $output->writeln('<comment>Done</comment>');
+                $dashboardExportPath = $input->getOption(self::DASHBOARD_EXPORT);
+                if ($dashboardExportPath === null) {
+                    $output->write('<info>Fetching database JSON file... </info>');
+                    $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
+                    $output->writeln('<comment>Done</comment>');
+                } else {
+                    if (!file_exists($dashboardExportPath)) {
+                        throw new Exception("Dashboard export file '{$dashboardExportPath}' does not exist");
+                    }
+
+                    $jsonData = json_decode(file_get_contents($dashboardExportPath), flags: JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
+                    if (!is_array($jsonData) || !array_is_list($jsonData)) {
+                        throw new Exception("Invalid JSON format");
+                    }
+                }
                 $referenceCount = count($jsonData);
                 $output->writeln("  {$referenceCount} references found");
                 $output->writeln('');
@@ -86,8 +104,9 @@ final class GenerateCommand extends Command
                 if (!$gitHashCache->process($output)) {
                     throw new Exception('Unable to warm up git hashed cache');
                 }
-                $output->writeln(' <comment>Done</comment>');
                 $twigEnvironment->addGlobal('git_hash_cache', $gitHashCache);
+                $output->writeln(' <comment>Done</comment>');
+                $output->writeln('');
 
                 $output->write('<info>Generating search index...</info>');
                 $searchIndexPath = $this->buildOutputPath('/searchIndex.json');
@@ -116,21 +135,43 @@ final class GenerateCommand extends Command
                 $output->writeln('');
 
                 $output->writeln('<info>Generating album pages...</info>');
-                $output->write('  Clearing album pages folder... ');
-                $albumPagesFolder = $this->buildOutputPath('/albums');
-                if (!FileHelpers::clearFolder($albumPagesFolder)) {
-                    throw new Exception("Unable to clear the album pages folder.");
-                }
-                $output->writeln('<comment>Done</comment>');
-
-                foreach ($jsonData as $album) {
-                    $output->write("  Album: {$album['title']} ");
-                    $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
-                    $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
-                    if (!$apg->generate($twigEnvironment)) {
-                        throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
+                if (!$input->getOption(self::SKIP_ALBUMS)) {
+                    $output->write('  Clearing album pages folder... ');
+                    $albumPagesFolder = $this->buildOutputPath('/albums');
+                    if (!FileHelpers::clearFolder($albumPagesFolder)) {
+                        throw new Exception("Unable to clear the album pages folder.");
                     }
-                    $output->writeln('<comment>OK</comment>');
+                    $output->writeln('<comment>Done</comment>');
+
+                    foreach ($jsonData as $album) {
+                        $output->write("  Album: {$album['title']} ");
+                        $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
+                        $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
+                        if (!$apg->generate($twigEnvironment)) {
+                            throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
+                        }
+                        $output->writeln('<comment>OK</comment>');
+                    }
+                } else {
+                    $output->writeln('  <comment>Skipping</comment>');
+                }
+                $output->writeln('');
+
+                $output->writeln('<info>Generating catalog pages...</info>');
+                if (!$input->getOption(self::SKIP_CATALOG)) {
+                    $output->write('  Clearing catalog pages folder... ');
+                    $albumPagesFolder = $this->buildOutputPath('/catalog');
+                    if (!FileHelpers::clearFolder($albumPagesFolder)) {
+                        throw new Exception("Unable to clear the catalog pages folder.");
+                    }
+                    $output->writeln('<comment>Done</comment>');
+
+                    $cg = new CatalogGenerator($this->currentEnvironment['base_url'], $jsonData);
+                    if (!$cg->generate($output, $twigEnvironment)) {
+                        throw new Exception("Unable to generate catalog pages");
+                    }
+                } else {
+                    $output->writeln('  <comment>Skipping</comment>');
                 }
                 $output->writeln('');
 
