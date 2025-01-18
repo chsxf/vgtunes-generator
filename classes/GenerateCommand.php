@@ -15,6 +15,9 @@ final class GenerateCommand extends Command
 {
     private const OUTPUT_PATH = 'output_path';
     private const ENVIRONMENT = 'environment';
+    private const CSS_ONLY = 'css-only';
+    private const SKIP_MINIFY = 'skip-minify';
+    private const PRETTY_SEARCH_INDEX = 'pretty-search-index';
 
     private ?array $currentEnvironment = null;
     private ?string $outputPath = null;
@@ -23,7 +26,10 @@ final class GenerateCommand extends Command
     {
         $this
             ->addArgument(self::OUTPUT_PATH, InputArgument::REQUIRED, "Output path for the generate files")
-            ->addOption(self::ENVIRONMENT, null, InputOption::VALUE_REQUIRED, 'Environment', 'dev');
+            ->addOption(self::ENVIRONMENT, null, InputOption::VALUE_REQUIRED, 'Environment', 'dev')
+            ->addOption(self::CSS_ONLY, description: "Generates CSS files only")
+            ->addOption(self::SKIP_MINIFY, description: "Skips minification")
+            ->addOption(self::PRETTY_SEARCH_INDEX, description: "Generates a JSON search index with the 'pretty print' setting");
     }
 
     function execute(InputInterface $input, OutputInterface $output): int
@@ -59,79 +65,89 @@ final class GenerateCommand extends Command
             $output->writeln("  <comment>Environment: {$environmentKey}</comment>");
             $output->writeln('');
 
-            $output->write('<info>Fetching database JSON file... </info>');
-            $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
-            $output->writeln('<comment>Done</comment>');
-            $referenceCount = count($jsonData);
-            $output->writeln("  {$referenceCount} references found");
-            $output->writeln('');
-
-            $output->writeln('<info>Warming up git hashes cache...</info>');
-            $gitHashCache = new GitHashManager($this->buildOutputPath('/'));
-            if (!$gitHashCache->process($output)) {
-                throw new Exception('Unable to warm up git hashed cache');
-            }
-            $output->writeln(' <comment>Done</comment>');
-            $twigEnvironment->addGlobal('git_hash_cache', $gitHashCache);
-
-            $output->write('<info>Generating search index...</info>');
-            $searchIndexPath = $this->buildOutputPath('/searchIndex.json');
-            $prettyPrint = $this->currentEnvironment['search_index_pretty_print'] ?? false;
-            $sig = new SearchIndexGenerator($jsonData, $searchIndexPath, false, $prettyPrint);
-            if (!$sig->generate()) {
-                throw new Exception("Unable to generate search index.");
-            }
-            $output->writeln(' <comment>Done</comment>');
-
-            $output->write('<info>Generating home page...</info>');
-            $homePagePath = $this->buildOutputPath('/index.html');
-            $hg = new HomeGenerator($jsonData, $homePagePath);
-            if (!$hg->generate($twigEnvironment)) {
-                throw new Exception("Unable to generate home page.");
-            }
-            $output->writeln(' <comment>Done</comment>');
-
-            $output->write('<info>Generating cookie settings and privacy policy page...</info>');
-            $cookiePrivacyPath = $this->buildOutputPath('/cookie-settings-and-privacy-policy.html');
-            $cpg = new CookiePrivacyGenerator($jsonData, $cookiePrivacyPath);
-            if (!$cpg->generate($twigEnvironment)) {
-                throw new Exception("Unable to generate cookie settings and privacy policy page.");
+            $output->writeln('<info>Compile CSS files</info>');
+            $scssCompiler = new SCSSCompiler('scss', $this->buildOutputPath('/css'));
+            if (!$scssCompiler->process($output)) {
+                throw new Exception('Unable to compile SCSS files');
             }
             $output->writeln(' <comment>Done</comment>');
             $output->writeln('');
 
-            $output->writeln('<info>Generating album pages...</info>');
-            $output->write('  Clearing album pages folder... ');
-            $albumPagesFolder = $this->buildOutputPath('/albums');
-            if (!FileHelpers::clearFolder($albumPagesFolder)) {
-                throw new Exception("Unable to clear the album pages folder.");
-            }
-            $output->writeln('<comment>Done</comment>');
+            if (!$input->getOption(self::CSS_ONLY)) {
+                $output->write('<info>Fetching database JSON file... </info>');
+                $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
+                $output->writeln('<comment>Done</comment>');
+                $referenceCount = count($jsonData);
+                $output->writeln("  {$referenceCount} references found");
+                $output->writeln('');
 
-            foreach ($jsonData as $album) {
-                $output->write("  Album: {$album['title']} ");
-                $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
-                $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
-                if (!$apg->generate($twigEnvironment)) {
-                    throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
+                $output->writeln('<info>Warming up git hashes cache...</info>');
+                $gitHashCache = new GitHashManager($this->buildOutputPath('/'));
+                if (!$gitHashCache->process($output)) {
+                    throw new Exception('Unable to warm up git hashed cache');
                 }
-                $output->writeln('<comment>OK</comment>');
-            }
-            $output->writeln('');
+                $output->writeln(' <comment>Done</comment>');
+                $twigEnvironment->addGlobal('git_hash_cache', $gitHashCache);
 
-            $output->writeln('<info>Replacements...</info>');
-            $rm = new ReplacementsManager($this->buildOutputPath('/'), $this->currentEnvironment['replacements']);
-            $output->writeln('  Populating files to apply replacements...');
-            $rm->populate($output);
-            $output->writeln('  Processing files...');
-            if (!$rm->process($output)) {
-                throw new Exception('Unable to apply replacements');
+                $output->write('<info>Generating search index...</info>');
+                $searchIndexPath = $this->buildOutputPath('/searchIndex.json');
+                $prettyPrint = $this->currentEnvironment['search_index_pretty_print'] ?? $input->getOption(self::PRETTY_SEARCH_INDEX);
+                $sig = new SearchIndexGenerator($jsonData, $searchIndexPath, false, $prettyPrint);
+                if (!$sig->generate()) {
+                    throw new Exception("Unable to generate search index.");
+                }
+                $output->writeln(' <comment>Done</comment>');
+
+                $output->write('<info>Generating home page...</info>');
+                $homePagePath = $this->buildOutputPath('/index.html');
+                $hg = new HomeGenerator($jsonData, $homePagePath);
+                if (!$hg->generate($twigEnvironment)) {
+                    throw new Exception("Unable to generate home page.");
+                }
+                $output->writeln(' <comment>Done</comment>');
+
+                $output->write('<info>Generating cookie settings and privacy policy page...</info>');
+                $cookiePrivacyPath = $this->buildOutputPath('/cookie-settings-and-privacy-policy.html');
+                $cpg = new CookiePrivacyGenerator($jsonData, $cookiePrivacyPath);
+                if (!$cpg->generate($twigEnvironment)) {
+                    throw new Exception("Unable to generate cookie settings and privacy policy page.");
+                }
+                $output->writeln(' <comment>Done</comment>');
+                $output->writeln('');
+
+                $output->writeln('<info>Generating album pages...</info>');
+                $output->write('  Clearing album pages folder... ');
+                $albumPagesFolder = $this->buildOutputPath('/albums');
+                if (!FileHelpers::clearFolder($albumPagesFolder)) {
+                    throw new Exception("Unable to clear the album pages folder.");
+                }
+                $output->writeln('<comment>Done</comment>');
+
+                foreach ($jsonData as $album) {
+                    $output->write("  Album: {$album['title']} ");
+                    $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
+                    $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
+                    if (!$apg->generate($twigEnvironment)) {
+                        throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
+                    }
+                    $output->writeln('<comment>OK</comment>');
+                }
+                $output->writeln('');
+
+                $output->writeln('<info>Replacements...</info>');
+                $rm = new ReplacementsManager($this->buildOutputPath('/'), $this->currentEnvironment['replacements']);
+                $output->writeln('  Populating files to apply replacements...');
+                $rm->populate($output);
+                $output->writeln('  Processing files...');
+                if (!$rm->process($output)) {
+                    throw new Exception('Unable to apply replacements');
+                }
+                $output->writeln('  <comment>Replacements Complete</comment>');
+                $output->writeln('');
             }
-            $output->writeln('  <comment>Replacements Complete</comment>');
-            $output->writeln('');
 
             $output->write('<info>Minification...</info>');
-            if (empty($this->currentEnvironment['minify'])) {
+            if (empty($this->currentEnvironment['minify']) || $input->getOption(self::SKIP_MINIFY)) {
                 $output->writeln(' <comment>Skipped</comment>');
             } else {
                 $output->writeln('');

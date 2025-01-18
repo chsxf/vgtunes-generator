@@ -74,17 +74,21 @@ final class MinificationManager extends AbstractFileBasedManager
 
             if (preg_match_all('#<link.+href="([^?]+)\?t=[0-9a-f]+".+/>#U', $processedContent, $allRegs, PREG_SET_ORDER)) {
                 foreach ($allRegs as $regs) {
-                    $cssMinifiedURL = preg_replace('/\.css$/', '.min.css', $regs[1]);
-                    $replacement = str_replace($regs[1], $cssMinifiedURL, $regs[0]);
-                    $processedContent = str_replace($regs[0], $replacement, $processedContent);
+                    if (!preg_match('/\.min\.css$/', $regs[1])) {
+                        $cssMinifiedURL = preg_replace('/\.css$/', '.min.css', $regs[1]);
+                        $replacement = str_replace($regs[1], $cssMinifiedURL, $regs[0]);
+                        $processedContent = str_replace($regs[0], $replacement, $processedContent);
+                    }
                 }
             }
 
             if (preg_match_all('/<script.+src="([^?]+)\?t=[0-9a-f]+".+>/U', $processedContent, $allRegs, PREG_SET_ORDER)) {
                 foreach ($allRegs as $regs) {
-                    $cssMinifiedURL = preg_replace('/\.js$/', '.min.js', $regs[1]);
-                    $replacement = str_replace($regs[1], $cssMinifiedURL, $regs[0]);
-                    $processedContent = str_replace($regs[0], $replacement, $processedContent);
+                    if (!preg_match('/\.min\.js$/', $regs[1])) {
+                        $cssMinifiedURL = preg_replace('/\.js$/', '.min.js', $regs[1]);
+                        $replacement = str_replace($regs[1], $cssMinifiedURL, $regs[0]);
+                        $processedContent = str_replace($regs[0], $replacement, $processedContent);
+                    }
                 }
             }
 
