@@ -1,0 +1,34 @@
+{% extends 'main-pages-base.twig' %}
+
+{% block header %}
+	<h1 class="align-center">Album Catalog</h1>
+{% endblock %}
+
+{% block content %}
+	<div class="scrollview">
+		<div class="column">
+			<table id="catalog-index">
+				<tr>
+					{% for key in all_letter_keys %}
+						<td>
+							{% if key in filled_bucket_keys %}
+								<a href="/catalog/albums/{{ key|lower }}">{{ key }}</a>
+							{% else %}
+								{{ key }}
+							{% endif %}
+						</td>
+					{% endfor %}
+				</tr>
+			</table>
+
+			<table id="catalog-section">
+				{% for album in bucket %}
+					<tr>
+						<td><img src="https://images.vgtunes.chsxf.dev/covers/{{ album.slug }}/cover_500.webp" width="32"></td>
+						<td>{{ album.title }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+{% endblock %}

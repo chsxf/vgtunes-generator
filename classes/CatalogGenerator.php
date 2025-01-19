@@ -5,11 +5,19 @@ use Twig\Environment;
 
 final class CatalogGenerator
 {
+    private const string OTHERS_KEY = 'others';
+
     private array $albumBuckets;
     private array $artistBuckets;
 
-    public function __construct(private string $baseUrl, private array $albums)
+    private static ?array $allLetterKeys = null;
+
+    public function __construct(private string $baseUrl, private array $albums, private IOutputPathBuilder $outputPathBuilder)
     {
+        if (self::$allLetterKeys === null) {
+            self::$allLetterKeys = array_merge(range('A', 'Z'), [self::OTHERS_KEY]);
+        }
+
         $this->albumBuckets = $this->prepareAlbumBuckets();
         $this->artistBuckets = $this->prepareArtistBuckets();
     }
@@ -24,7 +32,7 @@ final class CatalogGenerator
             $sortableTitle = preg_replace('/^(the|a) /i', '', $title);
             $sortKey = strtoupper($sortableTitle[0]);
             if (!array_key_exists($sortKey, $buckets)) {
-                $sortKey = '#';
+                $sortKey = self::OTHERS_KEY;
             }
 
             $buckets[$sortKey][] = array_merge($album, ['sortable_title' => $sortableTitle]);
@@ -33,7 +41,7 @@ final class CatalogGenerator
         $buckets = array_filter($buckets);
 
         foreach ($buckets as $key => &$albums) {
-            if ($key !== '#') {
+            if ($key !== self::OTHERS_KEY) {
                 usort($albums, fn($itemA, $itemB) => strcasecmp($itemA['sortable_title'], $itemB['sortable_title']));
             }
         }
@@ -48,9 +56,8 @@ final class CatalogGenerator
 
     private static function prepareEmptyBuckets(): array
     {
-        $keys = array_merge(range('A', 'Z'), ['#']);
-        $values = array_pad([], count($keys), []);
-        return array_combine($keys, $values);
+        $values = array_pad([], count(self::$allLetterKeys), []);
+        return array_combine(self::$allLetterKeys, $values);
     }
 
     public function generate(OutputInterface $output, Environment $twig): bool
@@ -60,6 +67,36 @@ final class CatalogGenerator
 
     private function generateAlbumCatalog(OutputInterface $output, Environment $twig): bool
     {
+        $bucketKeys = array_keys($this->albumBuckets);
+
+        foreach ($this->albumBuckets as $key => $bucket) {
+            if ($key == self::OTHERS_KEY) {
+                $message = 'Generating other albums catalog...';
+            } else {
+                $message = "Generating album catalog for letter {$key}...";
+            }
+            $output->write("  <comment>{$message}</comment>");
+
+            $fileContents = $twig->render('catalog/album.twig', [
+                'bucket' => $bucket,
+                'all_letter_keys' => self::$allLetterKeys,
+                'filled_bucket_keys' => $bucketKeys
+            ]);
+
+            $keyForPath = strtolower($key);
+            $path = $this->outputPathBuilder->buildOutputPath("/catalog/albums/{$keyForPath}/index.html");
+            $folderPath = dirname($path);
+            if (!is_dir($folderPath) && !mkdir($folderPath, recursive: true)) {
+                return false;
+            }
+
+            if (!file_put_contents($path, $fileContents)) {
+                return false;
+            }
+
+            $output->writeln(' <comment>Done</comment>');
+        }
+
         return true;
     }
 

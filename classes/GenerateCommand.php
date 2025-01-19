@@ -11,7 +11,7 @@ use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
 #[AsCommand("generate", "Generate website content")]
-final class GenerateCommand extends Command
+final class GenerateCommand extends Command implements IOutputPathBuilder
 {
     private const OUTPUT_PATH = 'output_path';
     private const ENVIRONMENT = 'environment';
@@ -166,7 +166,7 @@ final class GenerateCommand extends Command
                     }
                     $output->writeln('<comment>Done</comment>');
 
-                    $cg = new CatalogGenerator($this->currentEnvironment['base_url'], $jsonData);
+                    $cg = new CatalogGenerator($this->currentEnvironment['base_url'], $jsonData, $this);
                     if (!$cg->generate($output, $twigEnvironment)) {
                         throw new Exception("Unable to generate catalog pages");
                     }
@@ -238,8 +238,8 @@ final class GenerateCommand extends Command
         return "{$this->currentEnvironment['dashboard_url']}{$path}";
     }
 
-    private function buildOutputPath(string $path): string
+    public function buildOutputPath(string $relativePath): string
     {
-        return "{$this->outputPath}{$path}";
+        return "{$this->outputPath}{$relativePath}";
     }
 }
