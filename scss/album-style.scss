@@ -241,41 +241,43 @@ body.album-page {
     }
 
     #footer {
-        div.legal {
-            a {
-                display: block;
-                color: $color_3;
-
-                &:hover {
-                    color: $color_1;
-                }
-            }
-
-            color: $color_3;
-            font-weight: 100;
-        }
-
         box-sizing: border-box;
         width: calc(100vw - 100px);
         max-width: 500px;
         margin: 0 auto;
         padding: 20px;
         padding-top: 50px;
-
-        div.logo {
-            font-size: 150%;
-            font-family: $font-family_2;
-            color: $color_3;
-
-            img {
-                width: 24px;
-                vertical-align: -10%;
-            }
-        }
+        position: relative;
+        z-index: 1;
 
         div {
             font-size: 75%;
             text-align: center;
+
+            &.legal {
+                a {
+                    display: block;
+                    color: $color_3;
+
+                    &:hover {
+                        color: $color_1;
+                    }
+                }
+
+                color: $color_3;
+                font-weight: 100;
+            }
+
+            &.logo {
+                font-size: 150%;
+                font-family: $font-family_2;
+                color: $color_3;
+
+                img {
+                    width: 24px;
+                    vertical-align: -10%;
+                }
+            }
         }
     }
 
