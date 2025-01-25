@@ -2,10 +2,16 @@
 <html charset="utf-8">
 	<head>
 		<title>VGTunes</title>
-		<meta name="descripton" content="Get links to your favorite video game soundtracks on Deezer, Spotify and Apple Music.">
+		<meta name="descripton" content="Get links to your favorite original video game soundtracks on Deezer, Spotify and Apple Music.">
 		<link rel="preload" href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" as="style"/>
 		<link href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" rel="stylesheet"/>
 		<script type="text/javascript" src="js/search.js?t={{ git_hash_cache.getHash('js/search.js') }}" defer></script>
+
+		<meta property="og:site_name" content="VGTunes">
+		<meta property="og:title" content="VGTunes">
+		<meta property="og:image" content="{{ base_url }}images/logo-white-background-512px.png">
+		<meta property="og:url" content="{{ base_url }}">
+		<meta property="og:description" content="Get links to your favorite original video game soundtracks on Deezer, Spotify and Apple Music.">
 
 		{{ include('common-head.twig') }}
 	</head>

@@ -55,6 +55,7 @@ final class GenerateCommand extends Command
         if (!empty($twigOptions['debug'])) {
             $twigEnvironment->addExtension(new DebugExtension());
         }
+        $twigEnvironment->addGlobal('base_url', $this->currentEnvironment['base_url']);
 
         try {
             $output->writeln($this->getApplication()->getName());
