@@ -63,9 +63,10 @@
 				<ul id="links">
 					{% for platform, platformUrl in album.instances %}
 						<li class="platform platform-{{ platform }}">
-							<div class="logo"></div>
+							<div class="veil"></div>
 							<a href="{{ platformUrl[0] }}" target="_blank" class="platform-web-link">Listen on the web &gt;</a>
 							<a href="{{ platformUrl[1] }}" class="platform-app-link">Open in app &gt;</a>
+							<div class="logo"></div>
 						</li>
 					{% endfor %}
 				</ul>
