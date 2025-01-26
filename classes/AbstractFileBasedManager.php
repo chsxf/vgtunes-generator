@@ -10,16 +10,18 @@ abstract class AbstractFileBasedManager
 
     public function __construct(protected readonly string $basePath) {}
 
-    public final function populate(OutputInterface $output, bool $includeHtmlFiles = true): bool
+    public final function populate(OutputInterface $output, bool $includeHtmlFiles = true, int $indent = 4): bool
     {
         if (!$this->populatePath($this->basePath, $includeHtmlFiles)) {
             return false;
         }
 
-        $output->writeln(sprintf("    Found %d JavaScript files", count($this->jsFiles)));
-        $output->writeln(sprintf("    Found %d CSS files", count($this->cssFiles)));
+        $indentPrefix = str_pad('', $indent);
+
+        $output->writeln(sprintf("{$indentPrefix}Found %d JavaScript files", count($this->jsFiles)));
+        $output->writeln(sprintf("{$indentPrefix}Found %d CSS files", count($this->cssFiles)));
         if ($includeHtmlFiles) {
-            $output->writeln(sprintf("    Found %d HTML files", count($this->htmlFiles)));
+            $output->writeln(sprintf("{$indentPrefix}Found %d HTML files", count($this->htmlFiles)));
         }
         return true;
     }

@@ -31,9 +31,9 @@ final class AlbumPageGenerator
         $result = [];
         foreach ($instances as $platform => $platformId) {
             $result[$platform] = match ($platform) {
-                'deezer' => "https://www.deezer.com/album/{$platformId}",
-                'spotify' => "https://open.spotify.com/album/{$platformId}",
-                'apple_music' => "https://geo.music.apple.com/us/album/{$platformId}",
+                'deezer' => ["https://www.deezer.com/album/{$platformId}", "deezer://album/{$platformId}"],
+                'spotify' => ["https://open.spotify.com/album/{$platformId}", "spotify://album/{$platformId}"],
+                'apple_music' => ["https://geo.music.apple.com/album/{$platformId}", "music://music.apple.com/album/{$platformId}"],
                 default => $platformId
             };
         }

@@ -169,41 +169,6 @@ body.album-page {
     }
 
     #links {
-        li.platform {
-            a {
-                background-size: auto 70%;
-                background-repeat: no-repeat;
-                background-position: right 20px center;
-            }
-        }
-
-        li.platform-apple_music {
-            background: linear-gradient(180deg, #fa233b, #fb5c74);
-
-            a {
-                background-image: url("../images/apple_music-logo.svg");
-                border-left-color: $border-left-color_1;
-            }
-        }
-
-        li.platform-deezer {
-            background-color: $background-color_2;
-
-            a {
-                background-image: url("../images/deezer-logo.svg");
-                border-left-color: $border-left-color_2;
-            }
-        }
-
-        li.platform-spotify {
-            background-color: $background-color_3;
-
-            a {
-                background-image: url("../images/spotify-logo.png");
-                border-left-color: $border-left-color_3;
-            }
-        }
-
         list-style-type: none;
         margin: 0;
         padding: 0;
@@ -211,19 +176,80 @@ body.album-page {
         li {
             border-top: 1px solid gray;
             display: block;
+            position: relative;
+            white-space: collapse;
+
+            &.platform div.logo {
+                background-size: auto 70%;
+                background-repeat: no-repeat;
+                background-position: right 20px center;
+                background-color: $background-color_4;
+
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                right: 0;
+            }
+
+            &.platform-apple_music {
+                background: linear-gradient(180deg, #fa233b, #fb5c74);
+
+                div.logo {
+                    background-image: url("../images/apple_music-logo.svg");
+                }
+
+                a {
+                    border-left-color: $border-left-color_1;
+                }
+            }
+
+            &.platform-deezer {
+                background-color: $background-color_2;
+
+                div.logo {
+                    background-image: url("../images/deezer-logo.svg");
+                }
+
+                a {
+                    border-left-color: $border-left-color_2;
+                }
+            }
+
+            &.platform-spotify {
+                background-color: $background-color_3;
+
+                div.logo {
+                    background-image: url("../images/spotify-logo.png");
+                }
+
+                a {
+                    border-left-color: $border-left-color_3;
+                }
+            }
 
             a {
-                display: block;
+                display: inline-block;
                 text-decoration: none;
                 text-shadow: white 0 1px 0;
                 color: $color_2;
-                background-color: $background-color_4;
-                padding: 10px 20px;
+                padding: 10px;
                 font-weight: 500;
+                box-sizing: border-box;
+                position: relative;
+                z-index: 10;
+                border-left-width: 5px;
+                border-left-style: solid;
+
+                &.platform-web-link {
+                    width: 40%;
+                }
+
+                &.platform-app-link {
+                    width: 30%;
+                }
 
                 &:hover {
-                    border-left-width: 10px;
-                    border-left-style: solid;
                     background-color: $background-color_5;
                     transition-duration: 100ms;
                     transition-timing-function: ease-out;
@@ -233,7 +259,11 @@ body.album-page {
             &:last-child {
                 border-radius: 0 0 10px 10px;
 
-                a {
+                a.platform-web-link {
+                    border-radius: 0 0 0 10px;
+                }
+
+                div.logo {
                     border-radius: 0 0 10px 10px;
                 }
             }

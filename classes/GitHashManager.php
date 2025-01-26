@@ -8,18 +8,18 @@ final class GitHashManager extends AbstractFileBasedManager
 
     public function process(OutputInterface $output): bool
     {
-        $this->populate($output, includeHtmlFiles: false);
+        $this->populate($output, includeHtmlFiles: false, indent: 2);
 
         $previousWorkingDir = getcwd();
         chdir($this->basePath);
         try {
             foreach ($this->jsFiles as $jsFile) {
                 $relativePath = ltrim(substr($jsFile, strlen($this->basePath)), '/');
-                $this->hashes[$relativePath] = $this->fetchHash($relativePath);
+                $this->hashes[$relativePath] = $this->fetchHash($output, $relativePath);
             }
             foreach ($this->cssFiles as $cssFile) {
                 $relativePath = ltrim(substr($cssFile, strlen($this->basePath)), '/');
-                $this->hashes[$relativePath] = $this->fetchHash($relativePath);
+                $this->hashes[$relativePath] = $this->fetchHash($output, $relativePath);
             }
         } finally {
             chdir($previousWorkingDir);
@@ -28,12 +28,13 @@ final class GitHashManager extends AbstractFileBasedManager
         return true;
     }
 
-    private function fetchHash(string $relativePath): string
+    private function fetchHash(OutputInterface $output, string $relativePath): string
     {
         $cmdLine = "git log --oneline --pretty=format:\"%h | %ai\" -- {$relativePath}";
         $result = shell_exec($cmdLine);
         if ($result === false || $result === null) {
-            throw new Exception("Unable to get git has for file {$relativePath}");
+            $output->writeln("  <error>Unable to get git hash for file {$relativePath} - Using timestamp instead</error>");
+            $result = sprintf("%d |", time());
         }
 
         $pipeIndex = strpos($result, '|');

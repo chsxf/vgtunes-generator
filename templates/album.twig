@@ -30,6 +30,7 @@
 		</style>
 
 		<script type="text/javascript" src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
+		<script type="text/javascript" src="/js/album.js?t={{ git_hash_cache.getHash('js/album.js') }}" defer></script>
 
 		{{ include('common-head.twig') }}
 	</head>
@@ -62,7 +63,9 @@
 				<ul id="links">
 					{% for platform, platformUrl in album.instances %}
 						<li class="platform platform-{{ platform }}">
-							<a href="{{ platformUrl }}">Listen</a>
+							<div class="logo"></div>
+							<a href="{{ platformUrl[0] }}" target="_blank" class="platform-web-link">Listen on the web &gt;</a>
+							<a href="{{ platformUrl[1] }}" class="platform-app-link">Open in app &gt;</a>
 						</li>
 					{% endfor %}
 				</ul>
@@ -75,21 +78,5 @@
 		</div>
 
 		<div id="copied-to-clipboard-toast">Link copied to clipboard.</div>
-
-		<script type="text/javascript">
-			(function () {
-if (document.referrer) {
-const currentHost = document.location.host;
-const refererrerURL = new URL(document.referrer);
-console.log(currentHost, refererrerURL.host == currentHost);
-if (refererrerURL.host == currentHost) {
-const backButtonElements = document.getElementsByClassName("back-button");
-for (let button of backButtonElements) {
-button.classList.remove("hidden");
-}
-}
-}
-})();
-		</script>
 	</body>
 </html>
