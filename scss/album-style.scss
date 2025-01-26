@@ -312,7 +312,7 @@ body.album-page {
     visibility: hidden;
 }
 
-@media (min-device-width: 501px) {
+@media (min-device-width: 1001px) {
     .album-page {
         #links {
             li {
@@ -408,6 +408,10 @@ body.album-page {
                     border-left-width: 5px;
                     border-left-style: solid;
 
+                    &.platform-regular-link {
+                        display: none;
+                    }
+
                     &.platform-web-link {
                         width: 40%;
                     }
@@ -430,6 +434,10 @@ body.album-page {
                         border-radius: 0 0 0 10px;
                     }
 
+                    div.veil {
+                        border-radius: 0 0 10px 10px;
+                    }
+
                     div.logo {
                         border-radius: 0 0 10px 10px;
                     }
@@ -439,7 +447,7 @@ body.album-page {
     }
 }
 
-@media (max-device-width: 500px) {
+@media (max-device-width: 1000px) {
     .album-page {
         #links {
             li {
@@ -520,6 +528,18 @@ body.album-page {
                     border-bottom-width: 1px;
                     border-bottom-style: solid;
 
+                    &.platform-regular-link {
+                        border-bottom: none;
+                    }
+
+                    &.platform-web-link {
+                        display: none;
+                    }
+
+                    &.platform-app-link {
+                        display: none;
+                    }
+
                     &:hover {
                         background-color: $background-color_5;
                         transition-duration: 100ms;
@@ -536,6 +556,10 @@ body.album-page {
 
                     a.platform-web-link {
                         border-radius: 0 0 0 10px;
+                    }
+
+                    div.veil {
+                        border-radius: 0 0 10px 10px;
                     }
 
                     div.logo {
