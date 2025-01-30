@@ -15,7 +15,7 @@ final class GenerateCommand extends Command
 {
     private const OUTPUT_PATH = 'output_path';
     private const ENVIRONMENT = 'environment';
-    private const CSS_ONLY = 'css-only';
+    private const STATIC_FILES_ONLY = 'static-files-only';
     private const SKIP_MINIFY = 'skip-minify';
     private const PRETTY_SEARCH_INDEX = 'pretty-search-index';
 
@@ -27,7 +27,7 @@ final class GenerateCommand extends Command
         $this
             ->addArgument(self::OUTPUT_PATH, InputArgument::REQUIRED, "Output path for the generate files")
             ->addOption(self::ENVIRONMENT, null, InputOption::VALUE_REQUIRED, 'Environment', 'dev')
-            ->addOption(self::CSS_ONLY, description: "Generates CSS files only")
+            ->addOption(self::STATIC_FILES_ONLY, description: "Generates static files only (js, css)")
             ->addOption(self::SKIP_MINIFY, description: "Skips minification")
             ->addOption(self::PRETTY_SEARCH_INDEX, description: "Generates a JSON search index with the 'pretty print' setting");
     }
@@ -74,7 +74,15 @@ final class GenerateCommand extends Command
             $output->writeln(' <comment>Done</comment>');
             $output->writeln('');
 
-            if (!$input->getOption(self::CSS_ONLY)) {
+            $output->writeln('<info>Export JS files</info>');
+            $jsManager = new JavascriptManager('js', $this->buildOutputPath('/js'));
+            if (!$jsManager->process($output)) {
+                throw new Exception('Unable to export JS files');
+            }
+            $output->writeln(' <comment>Done</comment>');
+            $output->writeln('');
+
+            if (!$input->getOption(self::STATIC_FILES_ONLY)) {
                 $output->write('<info>Fetching database JSON file... </info>');
                 $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
                 $output->writeln('<comment>Done</comment>');
@@ -107,11 +115,11 @@ final class GenerateCommand extends Command
                 }
                 $output->writeln(' <comment>Done</comment>');
 
-                $output->write('<info>Generating cookie settings and privacy policy page...</info>');
-                $cookiePrivacyPath = $this->buildOutputPath('/cookie-settings-and-privacy-policy.html');
-                $cpg = new CookiePrivacyGenerator($jsonData, $cookiePrivacyPath);
+                $output->write('<info>Generating privacy policy and settings page...</info>');
+                $cookiePrivacyPath = $this->buildOutputPath('/privacy-policy-and-settings.html');
+                $cpg = new PrivacyPageGenerator($jsonData, $cookiePrivacyPath);
                 if (!$cpg->generate($twigEnvironment)) {
-                    throw new Exception("Unable to generate cookie settings and privacy policy page.");
+                    throw new Exception("Unable to generate privacy policy and settings page.");
                 }
                 $output->writeln(' <comment>Done</comment>');
                 $output->writeln('');
@@ -134,18 +142,18 @@ final class GenerateCommand extends Command
                     $output->writeln('<comment>OK</comment>');
                 }
                 $output->writeln('');
-
-                $output->writeln('<info>Replacements...</info>');
-                $rm = new ReplacementsManager($this->buildOutputPath('/'), $this->currentEnvironment['replacements']);
-                $output->writeln('  Populating files to apply replacements...');
-                $rm->populate($output);
-                $output->writeln('  Processing files...');
-                if (!$rm->process($output)) {
-                    throw new Exception('Unable to apply replacements');
-                }
-                $output->writeln('  <comment>Replacements Complete</comment>');
-                $output->writeln('');
             }
+
+            $output->writeln('<info>Replacements...</info>');
+            $rm = new ReplacementsManager($this->buildOutputPath('/'), $this->currentEnvironment['replacements']);
+            $output->writeln('  Populating files to apply replacements...');
+            $rm->populate($output);
+            $output->writeln('  Processing files...');
+            if (!$rm->process($output)) {
+                throw new Exception('Unable to apply replacements');
+            }
+            $output->writeln('  <comment>Replacements Complete</comment>');
+            $output->writeln('');
 
             $output->write('<info>Minification...</info>');
             if (empty($this->currentEnvironment['minify']) || $input->getOption(self::SKIP_MINIFY)) {
