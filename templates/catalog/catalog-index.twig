@@ -1,0 +1,24 @@
+<table id="catalog-index">
+	<tr>
+		{% for key in all_letter_keys %}
+			<td>
+				{% if key in filled_bucket_keys %}
+					<a href="/catalog/{{ catalog_category }}/{{ key|lower }}" {%- if key == catalog_key %} class="selected" {%- endif %}>{{ key }}</a>
+				{% else %}
+					<span class="empty-section">{{ key }}</span>
+				{% endif %}
+			</td>
+		{% endfor %}
+	</tr>
+</table>
+
+<div id="catalog-selector">
+	<select onchange="javascript:window.location.href = this.value">
+		{% for key in all_letter_keys %}
+			<option value="/catalog/{{ catalog_category }}/{{ key|lower }}" {%- if key not in filled_bucket_keys %} disabled {%- endif %} {%- if key == catalog_key %} selected {%- endif %}>
+				Go to Album Catalog -
+				{{ key }}
+			</option>
+		{% endfor %}
+	</select>
+</div>

@@ -53,7 +53,9 @@
 			<div id="cover" class="with-cover-image"></div>
 			<div id="infos">
 				<h1>{{ album.title }}</h1>
-				<h2>{{ album.artist }}</h2>
+				<h2>
+					<a href="/artists/{{ album.artists[0] }}">{{ album.artist }}</a>
+				</h2>
 
 				<a href="#" class="shbtn" data-share-url="{{ page_url }}" data-share-text="{{ album.title }} - {{ album.artist }}"><img src="/images/share-icon.png"/></a>
 			</div>

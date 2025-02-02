@@ -1,0 +1,34 @@
+{% extends 'main-pages-base.twig' %}
+
+{% set page_title = 'Artist Catalog - %s'|format(catalog_key|capitalize) %}
+
+{% block title ' - %s'|format(page_title) %}
+
+{% block header %}
+	<h1 class="catalog-header">{{ page_title }}</h1>
+
+	<div class="buttons-container">
+		<a href="/" class="button">&larr; Back</a>
+	</div>
+{% endblock %}
+
+{% block content %}
+	<div class="scrollview artist-catalog">
+		<div class="small-column">
+			{{ include('catalog/catalog-index.twig', { catalog_category: 'artists' }) }}
+
+			<ul id="catalog-listing">
+				{% for artist in bucket %}
+					<li>
+						<img src="/images/artist-silhouette.png">
+						<a href="/artists/{{ artist.slug }}">
+							<img src="/images/artist-silhouette.png" width="64">
+							<span class="name">{{ artist.name }}</span>
+							<span class="album_count">{{ '%d album(s) in the database'|format(artist.album_count) }}</span>
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+{% endblock %}

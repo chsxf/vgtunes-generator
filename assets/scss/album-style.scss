@@ -153,6 +153,14 @@ body.album-page {
             font-size: 18px;
             margin: 0;
             margin-right: 40px;
+
+            a {
+                color: white;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
         }
 
         .shbtn {

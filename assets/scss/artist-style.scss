@@ -1,0 +1,368 @@
+$color_1: white;
+$color_2: black;
+$color_3: lightgray;
+$font-family_1: "Radio Canada", sans-serif;
+$font-family_2: "Jost";
+$background-color_1: black;
+$background-color_4: rgba(255, 255, 255, 0.8);
+$background-color_5: rgba(255, 255, 255, 0.6);
+$background-color_6: darkslategray;
+$color_apple_music_1: #fa233b;
+$color_apple_music_2: #fb5c74;
+$color_deezer: #a238ff;
+$color_spotify: #1ed760;
+$color_bandcamp: #61929c;
+
+@import "https://fonts.googleapis.com/css2?family=Jost:wght@500&family=Radio+Canada:ital,wdth,wght@0,75..100,300..700;1,75..100,300..700&display=swap";
+
+* {
+    font-family: $font-family_1;
+    font-weight: 300;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    touch-action: pan-x pan-y;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+body.artist-page {
+    box-sizing: border-box;
+    margin: 0;
+    background-color: $background-color_1;
+    position: relative;
+    min-height: 100%;
+    padding: 20px;
+    padding-top: 10px;
+}
+
+.artist-page {
+    #infos {
+        background: linear-gradient(dimgray, rgb(32, 32, 32));
+        color: $color_1;
+        position: relative;
+        padding: 10px 20px;
+        border-radius: 10px 10px 0 0;
+
+        h1 {
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 32px;
+            margin: 0;
+        }
+
+        h2 {
+            font-weight: 100;
+            font-size: 18px;
+            margin: 0;
+            margin-right: 40px;
+        }
+
+        .shbtn {
+            display: block;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            height: 32px;
+
+            img {
+                height: 32px;
+            }
+        }
+    }
+
+    #links {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    #footer {
+        box-sizing: border-box;
+        width: calc(100vw - 100px);
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-top: 50px;
+        position: relative;
+        z-index: 1;
+
+        div {
+            font-size: 75%;
+            text-align: center;
+
+            &.legal {
+                a {
+                    display: block;
+                    color: $color_3;
+
+                    &:hover {
+                        color: $color_1;
+                    }
+                }
+
+                color: $color_3;
+                font-weight: 100;
+            }
+
+            &.logo {
+                font-size: 150%;
+                font-family: $font-family_2;
+                color: $color_3;
+
+                img {
+                    width: 24px;
+                    vertical-align: -10%;
+                }
+            }
+        }
+    }
+
+    #back-cover {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        filter: blur(1.5rem);
+        opacity: 25%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+
+        a {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            text-decoration: none;
+            display: block;
+        }
+    }
+
+    #container {
+        max-width: 500px;
+        margin: 0px auto;
+        border-radius: 10px;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+        position: relative;
+        z-index: 1;
+    }
+
+    #header {
+        position: relative;
+        box-sizing: border-box;
+        max-width: 500px;
+        margin: 0 auto;
+        margin-bottom: 10px;
+        padding: 0;
+        padding-left: 5px;
+        color: $color_1;
+        line-height: 48px;
+
+        a {
+            color: $color_1;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        div.logo {
+            * {
+                font-size: 150%;
+                font-family: $font-family_2;
+            }
+
+            a {
+                text-decoration: none;
+            }
+
+            img {
+                width: 24px;
+                vertical-align: -10%;
+            }
+        }
+
+        div.back-button {
+            position: absolute;
+            right: 10px;
+            top: 0;
+
+            a {
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+#copied-to-clipboard-toast {
+    position: absolute;
+    left: calc(50vw - 110px);
+    right: calc(50vw - 110px);
+    bottom: 30px;
+    background-color: $background-color_6;
+    color: $color_1;
+    padding: 15px 20px;
+    border-radius: 3px;
+    box-shadow: 0 3px 5px black;
+    text-align: center;
+    visibility: hidden;
+}
+
+@media (min-device-width: 1001px) {
+    .artist-page {
+
+        #header,
+        #container {
+            width: calc(100vw - 100px);
+        }
+
+        #links {
+            li {
+                border-top: 1px solid gray;
+                display: block;
+                position: relative;
+                white-space: collapse;
+                background-color: rgb(32, 32, 32);
+
+                a {
+                    display: inline-block;
+                    text-decoration: none;
+                    color: white;
+                    padding: 10px;
+                    font-weight: 500;
+                    box-sizing: border-box;
+                    position: relative;
+                    z-index: 10;
+                    width: 100%;
+                    height: 120px;
+                    text-shadow: 0 2px 2px black;
+
+                    &:hover {
+                        background: linear-gradient(90deg, darkslategray, rgb(32, 32, 32));
+                    }
+
+                    img {
+                        border-radius: 5px;
+                        box-shadow: 0 0 5px rgba(255, 255, 255, 0.25);
+                    }
+
+                    .title {
+                        position: absolute;
+                        top: 10px;
+                        left: 120px;
+                        right: 10px;
+                    }
+
+                    .platforms {
+                        position: absolute;
+                        bottom: 10px;
+                        left: 120px;
+                        right: 10px;
+                        text-align: right;
+
+                        img {
+                            width: 32px;
+                            margin-left: 5px;
+                        }
+                    }
+                }
+
+                &:last-child {
+                    border-radius: 0 0 10px 10px;
+
+                    a {
+                        border-radius: 0 0 10px 10px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-device-width: 1000px) {
+    .artist-page {
+
+        #header,
+        #container {
+            width: calc(100% - 20px);
+        }
+
+        #links {
+            li {
+                border-top: 1px solid gray;
+                display: block;
+                position: relative;
+                white-space: collapse;
+                background-color: rgb(32, 32, 32);
+
+                a {
+                    display: inline-block;
+                    text-decoration: none;
+                    color: white;
+                    padding: 10px;
+                    font-weight: 500;
+                    box-sizing: border-box;
+                    position: relative;
+                    z-index: 10;
+                    width: 100%;
+                    height: 84px;
+                    text-shadow: 0 2px 2px black;
+
+                    &:hover {
+                        background: linear-gradient(90deg, darkslategray, rgb(32, 32, 32));
+                    }
+
+                    img {
+                        border-radius: 5px;
+                        box-shadow: 0 0 5px rgba(255, 255, 255, 0.25);
+                        width: 64px;
+                    }
+
+                    .title {
+                        position: absolute;
+                        top: 10px;
+                        left: 84px;
+                        right: 10px;
+                        bottom: 32px;
+
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: normal;
+                    }
+
+                    .platforms {
+                        position: absolute;
+                        bottom: 5px;
+                        left: 84px;
+                        right: 5px;
+                        text-align: right;
+
+                        img {
+                            width: 16px;
+                            margin-left: 3px;
+                        }
+                    }
+                }
+
+                &:last-child {
+                    border-radius: 0 0 10px 10px;
+
+                    a {
+                        border-radius: 0 0 10px 10px;
+                    }
+                }
+            }
+        }
+    }
+}

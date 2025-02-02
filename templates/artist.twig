@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="Listen to this album on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
+
+		<meta property="og:site_name" content="VGTunes">
+		<meta property="og:title" content="{{ artist.name }}">
+		<meta property="og:url" content="{{ page_url }}">
+		<meta property="og:description" content="Listen to this artist's albums on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
+
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="{{ artist.name }}">
+		<meta name="twitter:description" content="Listen to this artist's albums on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
+		<meta name="twitter:url" content="{{ page_url }}">
+
+		<title>{{ artist.name }}
+			| VGTunes</title>
+
+		<link rel="preload" href="/css/artist-style.css?t={{ git_hash_cache.getHash('css/artist-style.css') }}" as="style"/>
+		<link href="/css/artist-style.css?t={{ git_hash_cache.getHash('css/artist-style.css') }}" rel="stylesheet"/>
+		<style type="text/css">
+			.with-cover-image {
+				background-image: url('{{ base_cover_url}}/{{ artist.albums[0].slug }}/cover_500.webp');
+			}
+		</style>
+
+		<script type="text/javascript" src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
+		<script type="text/javascript" src="/js/artist.js?t={{ git_hash_cache.getHash('js/artist.js') }}" defer></script>
+
+		{{ include('common-head.twig') }}
+	</head>
+	<body class="artist-page">
+		<div id="back-cover" class="with-cover-image">
+			<a href="/" class="back-button hidden">Test</a>
+		</div>
+		<div id="header">
+			<div class="logo">
+				<a href="/"><img src="/images/logo-icon-white-128px.png"/>
+					VGTunes</a>
+			</div>
+
+			<div class="back-button hidden">
+				<a href="/">&larr; Back</a>
+			</div>
+		</div>
+
+		<div id="container">
+			<div id="infos">
+				<h1>{{ artist.name }}</h1>
+
+				<a href="#" class="shbtn" data-share-url="{{ page_url }}" data-share-text="{{ artist.name }}"><img src="/images/share-icon.png"/></a>
+			</div>
+
+			<ul id="links">
+				{% for album in artist.albums %}
+					<li class="album">
+						<a href="/albums/{{ album.slug }}/">
+							<img src="{{ base_cover_url }}/{{ album.slug }}/cover_100.webp"/>
+							<span class="title">{{ album.title }}</span>
+							<div class="platforms">
+								{% for platform, platformId in album.instances %}
+									<img src="/images/platform-icons/{{ platform }}.png" alt="{{ platform_names[platform] }}"/>
+								{% endfor %}
+							</div>
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		<div id="footer">
+			<div class="logo"><img src="/images/logo-icon-white-128px.png"/>
+				VGTunes</div>
+			<div class="legal">{{ include('legal-footer.twig') }}</div>
+		</div>
+
+		<div id="copied-to-clipboard-toast">Link copied to clipboard.</div>
+	</body>
+</html>

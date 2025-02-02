@@ -24,7 +24,7 @@ final class WatchCommand extends AbstractCommand implements IWatchResponder
         $this->generationCommandLine = $this->prepareGenerationCommandLine();
         $this->proceedWithGeneration();
 
-        $this->folderWatcherRunner = new Runner(['scss', 'js', 'templates']);
+        $this->folderWatcherRunner = new Runner(['.']);
         $this->folderWatcherRunner->addResponder($this);
         $this->folderWatcherRunner->watch();
 
@@ -38,6 +38,8 @@ final class WatchCommand extends AbstractCommand implements IWatchResponder
             self::DASHBOARD_EXPORT,
             self::ENVIRONMENT,
             self::SKIP_ALBUMS,
+            self::SKIP_ARTISTS,
+            self::SKIP_CATALOG,
             self::STATIC_FILES_ONLY,
             self::SKIP_MINIFY,
             self::PRETTY_SEARCH_INDEX
@@ -60,7 +62,6 @@ final class WatchCommand extends AbstractCommand implements IWatchResponder
         $this->output->writeln('<info>Generating...</info>');
         $this->output->writeln('');
 
-        //system($this->generationCommandLine);
         $proc = proc_open($this->generationCommandLine, [STDIN, STDOUT, STDOUT], $pipes);
         proc_close($proc);
     }

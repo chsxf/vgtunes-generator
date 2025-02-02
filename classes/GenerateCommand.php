@@ -37,6 +37,12 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
             $this->twigEnvironment->addExtension(new DebugExtension());
         }
         $this->twigEnvironment->addGlobal('base_url', $this->currentEnvironment['base_url']);
+        $this->twigEnvironment->addGlobal('platform_names', [
+            'apple_music' => 'Apple Music',
+            'bandcamp' => 'Bandcamp',
+            'deezer' => 'Deezer',
+            'spotify' => 'Spotify'
+        ]);
 
         $this->outputPath = $input->getArgument(self::OUTPUT_PATH);
 
@@ -159,8 +165,8 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 $output->writeln('<info>Generating album pages...</info>');
                 if (!$input->getOption(self::SKIP_ALBUMS)) {
                     $output->write('  <comment>Clearing album pages folder...</comment> ');
-                    $albumPagesFolder = $this->buildOutputPath('/albums');
-                    if (!FileHelpers::clearFolder($albumPagesFolder)) {
+                    $artistPagesFolder = $this->buildOutputPath('/albums');
+                    if (!FileHelpers::clearFolder($artistPagesFolder)) {
                         throw new Exception("Unable to clear the album pages folder.");
                     }
                     $output->writeln('<info>Done</info>');
@@ -173,6 +179,48 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                             throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
                         }
                         $output->writeln('<info>OK</info>');
+                    }
+                } else {
+                    $output->writeln('  <info>Skipping</info>');
+                }
+                $output->writeln('');
+
+                $output->writeln('<info>Generating artist pages...</info>');
+                if (!$input->getOption(self::SKIP_ARTISTS)) {
+                    $output->write('  <comment>Clearing artist pages folder...</comment> ');
+                    $artistPagesFolder = $this->buildOutputPath('/artists');
+                    if (!FileHelpers::clearFolder($artistPagesFolder)) {
+                        throw new Exception("Unable to clear the artist pages folder.");
+                    }
+                    $output->writeln('<info>Done</info>');
+
+                    foreach ($jsonData['artists'] as $slug => $name) {
+                        $output->write("  <comment>Artist: {$name}</comment> ");
+                        $filePath = $this->buildOutputPath("/artists/{$slug}/index.html");
+                        $albums = array_values(array_filter($jsonData['albums'], fn($album) => in_array($slug, $album['artists'])));
+                        $apg = new ArtistPageGenerator($this->currentEnvironment['base_url'], $filePath, $slug, $name, $albums);
+                        if (!$apg->generate($this->twigEnvironment)) {
+                            throw new Exception("Unable to generate artist page for slug '{$slug}'");
+                        }
+                        $output->writeln('<info>OK</info>');
+                    }
+                } else {
+                    $output->writeln('  <info>Skipping</info>');
+                }
+                $output->writeln('');
+
+                $output->writeln('<info>Generating catalog pages...</info>');
+                if (!$input->getOption(self::SKIP_CATALOG)) {
+                    $output->write('  <comment>Clearing catalog pages folder...</comment> ');
+                    $artistPagesFolder = $this->buildOutputPath('/catalog');
+                    if (!FileHelpers::clearFolder($artistPagesFolder)) {
+                        throw new Exception("Unable to clear the catalog pages folder.");
+                    }
+                    $output->writeln('<info>Done</info>');
+
+                    $cg = new CatalogGenerator($this->currentEnvironment['base_url'], $jsonData, $this);
+                    if (!$cg->generate($output, $this->twigEnvironment)) {
+                        throw new Exception("Unable to generate catalog pages");
                     }
                 } else {
                     $output->writeln('  <info>Skipping</info>');

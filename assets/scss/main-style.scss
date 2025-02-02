@@ -13,8 +13,6 @@ $border-color_1: white;
 
 @import "https://fonts.googleapis.com/css2?family=Jost:wght@500&family=Radio+Canada:ital,wdth,wght@0,75..100,300..700;1,75..100,300..700&display=swap";
 
-/* Desktop */
-/* Mobile */
 * {
     font-family: $font-family_1;
     font-weight: 300;
@@ -342,24 +340,27 @@ a {
 
             position: relative;
             display: block;
-            height: 64px;
             margin-bottom: 10px;
 
+            height: 64px;
+
             border: 1px solid black;
+            border-radius: 5px;
             box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.25);
+            text-shadow: 0 2px 2px black;
 
             >img {
                 filter: blur(20px);
                 opacity: 20%;
-            }
-
-            &:hover {
-                border: 1px solid gray;
-                border-radius: 5px;
+                width: 100%;
             }
 
             &:last-child {
                 margin-bottom: 0;
+            }
+
+            &:hover {
+                border: 1px solid gray;
             }
 
             a {
@@ -374,28 +375,67 @@ a {
                     border-top-left-radius: 5px;
                     border-bottom-left-radius: 5px;
                 }
+            }
+        }
+    }
 
-                .title {
-                    position: absolute;
-                    left: 74px;
-                    right: 10px;
-                    top: 0;
-                    line-height: 40px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
+    .album-catalog {
+        #catalog-listing {
+            li {
+                a {
+                    .title {
+                        position: absolute;
+                        left: 74px;
+                        right: 10px;
+                        top: 0;
+                        line-height: 40px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    .artist {
+                        position: absolute;
+                        left: 74px;
+                        top: 35px;
+                        right: 10px;
+                        font-size: 80%;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        color: gray;
+                    }
                 }
+            }
+        }
+    }
 
-                .artist {
-                    position: absolute;
-                    left: 74px;
-                    top: 35px;
-                    right: 10px;
-                    font-size: 80%;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    color: gray;
+    .artist-catalog {
+        #catalog-listing {
+            li {
+                a {
+                    .name {
+                        position: absolute;
+                        left: 74px;
+                        right: 10px;
+                        top: 0;
+                        line-height: 40px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    .album_count {
+                        position: absolute;
+                        left: 74px;
+                        top: 35px;
+                        right: 10px;
+                        font-size: 80%;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        color: gray;
+                    }
                 }
             }
         }
