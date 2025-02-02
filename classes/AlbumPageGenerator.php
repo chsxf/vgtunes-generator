@@ -34,7 +34,8 @@ final class AlbumPageGenerator
                 'deezer' => ["https://www.deezer.com/album/{$platformId}", "deezer://album/{$platformId}"],
                 'spotify' => ["https://open.spotify.com/album/{$platformId}", "spotify://album/{$platformId}"],
                 'apple_music' => ["https://geo.music.apple.com/album/{$platformId}", "music://music.apple.com/album/{$platformId}"],
-                default => $platformId
+                'bandcamp' => [explode('|', $platformId)[1]],
+                default => [$platformId, '']
             };
         }
         return $result;

@@ -4,14 +4,14 @@ $color_3: lightgray;
 $font-family_1: "Radio Canada", sans-serif;
 $font-family_2: "Jost";
 $background-color_1: black;
-$background-color_2: #a238ff;
-$background-color_3: #1ed760;
 $background-color_4: rgba(255, 255, 255, 0.8);
 $background-color_5: rgba(255, 255, 255, 0.6);
 $background-color_6: darkslategray;
-$border-left-color_1: #fb5c74;
-$border-left-color_2: #a238ff;
-$border-left-color_3: #1ed760;
+$color_apple_music_1: #fa233b;
+$color_apple_music_2: #fb5c74;
+$color_deezer: #a238ff;
+$color_spotify: #1ed760;
+$color_bandcamp: #61929c;
 
 @import "https://fonts.googleapis.com/css2?family=Jost:wght@500&family=Radio+Canada:ital,wdth,wght@0,75..100,300..700;1,75..100,300..700&display=swap";
 
@@ -360,38 +360,50 @@ body.album-page {
                 }
 
                 &.platform-apple_music {
-                    background: linear-gradient(180deg, #fa233b, #fb5c74);
+                    background: linear-gradient(180deg, $color_apple_music_1, $color_apple_music_2);
 
                     div.logo {
                         background-image: url("../images/apple_music-logo.svg");
                     }
 
                     a {
-                        border-left-color: $border-left-color_1;
+                        border-left-color: $color_apple_music_2;
                     }
                 }
 
                 &.platform-deezer {
-                    background-color: $background-color_2;
+                    background-color: $color_deezer;
 
                     div.logo {
                         background-image: url("../images/deezer-logo.svg");
                     }
 
                     a {
-                        border-left-color: $border-left-color_2;
+                        border-left-color: $color_deezer;
                     }
                 }
 
                 &.platform-spotify {
-                    background-color: $background-color_3;
+                    background-color: $color_spotify;
 
                     div.logo {
                         background-image: url("../images/spotify-logo.png");
                     }
 
                     a {
-                        border-left-color: $border-left-color_3;
+                        border-left-color: $color_spotify;
+                    }
+                }
+
+                &.platform-bandcamp {
+                    background-color: $color_bandcamp;
+
+                    div.logo {
+                        background-image: url("../images/bandcamp-logo.png");
+                    }
+
+                    a {
+                        border-left-color: $color_bandcamp;
                     }
                 }
 
@@ -490,8 +502,8 @@ body.album-page {
                 }
 
                 &.platform-apple_music {
-                    background: linear-gradient(180deg, #fa233b, #fb5c74);
-                    border-left-color: $border-left-color_1;
+                    background: linear-gradient(180deg, $color_apple_music_1, $color_apple_music_2);
+                    border-left-color: $color_apple_music_2;
 
                     div.logo {
                         background-image: url("../images/apple_music-logo.svg");
@@ -499,8 +511,8 @@ body.album-page {
                 }
 
                 &.platform-deezer {
-                    background-color: $background-color_2;
-                    border-left-color: $border-left-color_2;
+                    background-color: $color_deezer;
+                    border-left-color: $color_deezer;
 
                     div.logo {
                         background-image: url("../images/deezer-logo.svg");
@@ -508,11 +520,20 @@ body.album-page {
                 }
 
                 &.platform-spotify {
-                    background-color: $background-color_3;
-                    border-left-color: $border-left-color_3;
+                    background-color: $color_spotify;
+                    border-left-color: $color_spotify;
 
                     div.logo {
                         background-image: url("../images/spotify-logo.png");
+                    }
+                }
+
+                &.platform-bandcamp {
+                    background-color: $color_bandcamp;
+                    border-left-color: $color_bandcamp;
+
+                    div.logo {
+                        background-image: url("../images/bandcamp-logo.png");
                     }
                 }
 
