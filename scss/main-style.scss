@@ -203,18 +203,6 @@ a {
     }
 }
 
-#top-bar-container {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    margin: 0;
-    box-shadow: black 0 5px 10px;
-    z-index: 10;
-    background: linear-gradient(#222, #444);
-    border-bottom: 1px solid #666;
-}
-
 #main-section {
     position: absolute;
     left: 0;
@@ -295,8 +283,102 @@ a {
     }
 
     #top-bar-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        margin: 0;
+        box-shadow: black 0 5px 10px;
+        z-index: 10;
+        background: linear-gradient(#222, #444);
+        border-bottom: 1px solid #666;
+
         .buttons-container {
             position: absolute;
+
+            .button {
+                border: 1px solid #666;
+                border-radius: 3px;
+                background-color: $background-color_6;
+                display: inline-block;
+
+                &:hover {
+                    border-color: $border-color_1;
+                }
+            }
+        }
+    }
+
+    #catalog-listing {
+        max-width: 80%;
+        margin: 40px auto;
+        list-style-type: none;
+        padding: 0;
+
+        li {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+
+            position: relative;
+            display: block;
+            height: 64px;
+            margin-bottom: 10px;
+
+            border: 1px solid black;
+            box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.25);
+
+            >img {
+                filter: blur(20px);
+                opacity: 20%;
+            }
+
+            &:hover {
+                border: 1px solid gray;
+                border-radius: 5px;
+            }
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            a {
+                position: absolute;
+                display: block;
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+
+                img {
+                    border-top-left-radius: 5px;
+                    border-bottom-left-radius: 5px;
+                }
+
+                .title {
+                    position: absolute;
+                    left: 74px;
+                    right: 10px;
+                    top: 0;
+                    line-height: 40px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .artist {
+                    position: absolute;
+                    left: 74px;
+                    top: 35px;
+                    right: 10px;
+                    font-size: 80%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    color: gray;
+                }
+            }
         }
     }
 }
@@ -321,28 +403,6 @@ a {
     }
 }
 
-#submit-album-button {
-    border: 1px solid #666;
-    border-radius: 3px;
-    background-color: $background-color_6;
-    display: inline-block;
-
-    &:hover {
-        border-color: $border-color_1;
-    }
-}
-
-#report-error-button {
-    border: 1px solid #666;
-    border-radius: 3px;
-    background-color: $background-color_6;
-    display: inline-block;
-
-    &:hover {
-        border-color: $border-color_1;
-    }
-}
-
 @media screen and (min-device-width: 1001px) {
     #header {
         .logo {
@@ -362,6 +422,11 @@ a {
 
     .column {
         width: 960px;
+        margin: 0 auto;
+    }
+
+    .small-column {
+        width: 720px;
         margin: 0 auto;
     }
 
@@ -391,26 +456,55 @@ a {
             .buttons-container {
                 right: 0;
                 top: 12px;
+
+                .button {
+                    line-height: 30px;
+                    padding: 0 10px;
+                    font-size: 14px;
+                    margin-left: 10px;
+                }
             }
+        }
+
+        #catalog-index {
+            margin: 20px auto;
+            border-bottom: 1px solid darkslategray;
+            border-top: 1px solid darkslategray;
+            border-collapse: collapse;
+
+            td {
+                line-height: 32px;
+                color: darkslategray;
+
+                a {
+                    color: gray;
+                    display: inline-block;
+                    padding: 0 5px;
+
+                    &:hover {
+                        color: white;
+                        background-color: darkslategray;
+                    }
+
+                    &.selected {
+                        color: white;
+                    }
+                }
+
+                span.empty-section {
+                    display: inline-block;
+                    padding: 0 5px;
+                }
+            }
+        }
+
+        #catalog-selector {
+            display: none;
         }
     }
 
     #footer {
         height: 50px;
-    }
-
-    #submit-album-button {
-        line-height: 30px;
-        padding: 0 10px;
-        font-size: 14px;
-        margin-left: 10px;
-    }
-
-    #report-error-button {
-        line-height: 30px;
-        padding: 0 10px;
-        font-size: 14px;
-        margin-left: 10px;
     }
 }
 
@@ -458,20 +552,40 @@ a {
             .buttons-container {
                 right: 0;
                 top: 5px;
+
+                .button {
+                    line-height: 30px;
+                    padding: 0 10px;
+                    font-size: 14px;
+                    margin-left: 10px;
+                    background-color: $background-color_7;
+                }
+            }
+        }
+
+        #catalog-index {
+            display: none;
+        }
+
+        #catalog-selector {
+            margin: 20px auto;
+            width: 80%;
+
+            select {
+                width: 100%;
+
+                background: linear-gradient(darkslategray, rgb(23, 40, 40));
+                color: white;
+                padding: 5px 15px;
+                border-radius: 3px;
+                border: 1px solid darkslategray;
+                font-size: 18px;
             }
         }
     }
 
     #footer {
         height: 70px;
-    }
-
-    #submit-album-button {
-        line-height: 30px;
-        padding: 0 10px;
-        font-size: 14px;
-        margin-left: 10px;
-        background-color: $background-color_7;
     }
 
     #report-error-button {

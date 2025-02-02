@@ -2,46 +2,28 @@
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
 #[AsCommand("generate", "Generate website content")]
-final class GenerateCommand extends Command
+final class GenerateCommand extends AbstractCommand implements IOutputPathBuilder
 {
-    private const OUTPUT_PATH = 'output_path';
-    private const ENVIRONMENT = 'environment';
-    private const STATIC_FILES_ONLY = 'static-files-only';
-    private const SKIP_MINIFY = 'skip-minify';
-    private const PRETTY_SEARCH_INDEX = 'pretty-search-index';
-
     private ?array $currentEnvironment = null;
     private ?string $outputPath = null;
 
-    function configure()
-    {
-        $this
-            ->addArgument(self::OUTPUT_PATH, InputArgument::REQUIRED, "Output path for the generate files")
-            ->addOption(self::ENVIRONMENT, null, InputOption::VALUE_REQUIRED, 'Environment', 'dev')
-            ->addOption(self::STATIC_FILES_ONLY, description: "Generates static files only (js, css)")
-            ->addOption(self::SKIP_MINIFY, description: "Skips minification")
-            ->addOption(self::PRETTY_SEARCH_INDEX, description: "Generates a JSON search index with the 'pretty print' setting");
-    }
+    private Environment $twigEnvironment;
 
-    function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $environmentKey = $input->getOption(self::ENVIRONMENT);
         $envFilePath = "environments/env.{$environmentKey}.php";
         $this->currentEnvironment = require_once($envFilePath);
 
-        $this->outputPath = $input->getArgument(self::OUTPUT_PATH);
-
         $twigOptions = [
-            'cache' => 'twig_cache',
+            'cache' => false,
             'auto_reload' => true,
             'strict_variables' => true
         ];
@@ -50,12 +32,13 @@ final class GenerateCommand extends Command
         }
 
         $loader = new FilesystemLoader('templates');
-        $twigEnvironment = new Environment($loader, $twigOptions);
-
+        $this->twigEnvironment = new Environment($loader, $twigOptions);
         if (!empty($twigOptions['debug'])) {
-            $twigEnvironment->addExtension(new DebugExtension());
+            $this->twigEnvironment->addExtension(new DebugExtension());
         }
-        $twigEnvironment->addGlobal('base_url', $this->currentEnvironment['base_url']);
+        $this->twigEnvironment->addGlobal('base_url', $this->currentEnvironment['base_url']);
+
+        $this->outputPath = $input->getArgument(self::OUTPUT_PATH);
 
         try {
             $output->writeln($this->getApplication()->getName());
@@ -63,7 +46,7 @@ final class GenerateCommand extends Command
 
             $output->writeln('<info>Settings</info>');
             $output->writeln("  <comment>Output folder: {$this->outputPath}</comment>");
-            $output->writeln("  <comment>Environment: {$environmentKey}</comment>");
+            $output->writeln("  <comment>Environment: {$input->getOption(self::ENVIRONMENT)}</comment>");
             $output->writeln('');
 
             $output->writeln('<info>Compile CSS files</info>');
@@ -83,9 +66,21 @@ final class GenerateCommand extends Command
             $output->writeln('');
 
             if (!$input->getOption(self::STATIC_FILES_ONLY)) {
+                $dashboardExportPath = $input->getOption(self::DASHBOARD_EXPORT);
+                if ($dashboardExportPath === null) {
                 $output->write('<info>Fetching database JSON file... </info>');
                 $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
                 $output->writeln('<comment>Done</comment>');
+                } else {
+                    if (!file_exists($dashboardExportPath)) {
+                        throw new Exception("Dashboard export file '{$dashboardExportPath}' does not exist");
+                    }
+
+                    $jsonData = json_decode(file_get_contents($dashboardExportPath), flags: JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
+                    if (!is_array($jsonData) || !array_is_list($jsonData)) {
+                        throw new Exception("Invalid JSON format");
+                    }
+                }
                 $referenceCount = count($jsonData);
                 $output->writeln("  {$referenceCount} references found");
                 $output->writeln('');
@@ -95,8 +90,9 @@ final class GenerateCommand extends Command
                 if (!$gitHashCache->process($output)) {
                     throw new Exception('Unable to warm up git hashed cache');
                 }
+                $this->twigEnvironment->addGlobal('git_hash_cache', $gitHashCache);
                 $output->writeln(' <comment>Done</comment>');
-                $twigEnvironment->addGlobal('git_hash_cache', $gitHashCache);
+                $output->writeln('');
 
                 $output->write('<info>Generating search index...</info>');
                 $searchIndexPath = $this->buildOutputPath('/searchIndex.json');
@@ -110,7 +106,7 @@ final class GenerateCommand extends Command
                 $output->write('<info>Generating home page...</info>');
                 $homePagePath = $this->buildOutputPath('/index.html');
                 $hg = new HomeGenerator($jsonData, $homePagePath);
-                if (!$hg->generate($twigEnvironment)) {
+                if (!$hg->generate($this->twigEnvironment)) {
                     throw new Exception("Unable to generate home page.");
                 }
                 $output->writeln(' <comment>Done</comment>');
@@ -118,13 +114,14 @@ final class GenerateCommand extends Command
                 $output->write('<info>Generating privacy policy and settings page...</info>');
                 $cookiePrivacyPath = $this->buildOutputPath('/privacy-policy-and-settings.html');
                 $cpg = new PrivacyPageGenerator($jsonData, $cookiePrivacyPath);
-                if (!$cpg->generate($twigEnvironment)) {
+                if (!$cpg->generate($this->twigEnvironment)) {
                     throw new Exception("Unable to generate privacy policy and settings page.");
                 }
                 $output->writeln(' <comment>Done</comment>');
                 $output->writeln('');
 
                 $output->writeln('<info>Generating album pages...</info>');
+                if (!$input->getOption(self::SKIP_ALBUMS)) {
                 $output->write('  Clearing album pages folder... ');
                 $albumPagesFolder = $this->buildOutputPath('/albums');
                 if (!FileHelpers::clearFolder($albumPagesFolder)) {
@@ -136,10 +133,13 @@ final class GenerateCommand extends Command
                     $output->write("  Album: {$album['title']} ");
                     $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
                     $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
-                    if (!$apg->generate($twigEnvironment)) {
+                        if (!$apg->generate($this->twigEnvironment)) {
                         throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
                     }
                     $output->writeln('<comment>OK</comment>');
+                }
+                } else {
+                    $output->writeln('  <comment>Skipping</comment>');
                 }
                 $output->writeln('');
             }
@@ -206,8 +206,8 @@ final class GenerateCommand extends Command
         return "{$this->currentEnvironment['dashboard_url']}{$path}";
     }
 
-    private function buildOutputPath(string $path): string
+    public function buildOutputPath(string $relativePath): string
     {
-        return "{$this->outputPath}{$path}";
+        return "{$this->outputPath}{$relativePath}";
     }
 }

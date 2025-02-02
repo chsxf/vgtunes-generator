@@ -1,4 +1,12 @@
-#!php
+#!/usr/bin/env php
 <?php
+
+use Symfony\Component\Console\Application;
+
 chdir(__DIR__);
-require_once('app.php');
+require_once('vendor/autoload.php');
+
+$app = new Application('VGTunes Site Generator', '0.0.1');
+$app->add(new GenerateCommand());
+$app->add(new WatchCommand());
+$app->run();

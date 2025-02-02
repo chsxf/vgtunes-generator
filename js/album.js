@@ -6,6 +6,12 @@ function setupBackLinks() {
       const backButtonElements = document.getElementsByClassName("back-button");
       for (let button of backButtonElements) {
         button.classList.remove("hidden");
+
+        button.addEventListener("click", function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          history.back();
+        });
       }
     }
   }

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html charset="utf-8">
 	<head>
-		<title>VGTunes</title>
+		<title>VGTunes
+			{% block title %}{% endblock %}
+		</title>
 		<meta name="descripton" content="Get links to your favorite original video game soundtracks on Deezer, Spotify and Apple Music.">
 		<link rel="preload" href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" as="style"/>
 		<link href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" rel="stylesheet"/>
-		<script type="text/javascript" src="js/search.js?t={{ git_hash_cache.getHash('js/search.js') }}" defer></script>
+		<script type="text/javascript" src="/js/search.js?t={{ git_hash_cache.getHash('js/search.js') }}" defer></script>
 
 		<meta property="og:site_name" content="VGTunes">
 		<meta property="og:title" content="VGTunes">
@@ -26,7 +28,7 @@
 							VGTunes</a>
 					</div>
 					<div class="search">
-						<img src="images/looking-glass.svg" class="looking-glass"/>
+						<img src="/images/looking-glass.svg" class="looking-glass"/>
 						<input type="text" id="search-terms" placeholder="Loading search index..." disabled/>
 						<div id="results-dropdown">
 							<ul id="results-list">
