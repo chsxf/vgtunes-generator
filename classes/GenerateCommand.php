@@ -49,18 +49,44 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
             $output->writeln("  <comment>Environment: {$input->getOption(self::ENVIRONMENT)}</comment>");
             $output->writeln('');
 
-            $output->writeln('<info>Compile CSS files</info>');
-            $scssCompiler = new SCSSCompiler('scss', $this->buildOutputPath('/css'));
+            $output->writeln('<info>Compiling SCSS files</info>');
+            $output->write('  Clearing CSS folder... ');
+            $cssFolder = $this->buildOutputPath('/css');
+            if (!FileHelpers::clearFolder($cssFolder)) {
+                throw new Exception("Unable to clear the CSS folder.");
+            }
+            $output->writeln('<comment>Done</comment>');
+            $scssCompiler = new SCSSCompiler('assets/scss', $cssFolder);
             if (!$scssCompiler->process($output)) {
                 throw new Exception('Unable to compile SCSS files');
             }
             $output->writeln(' <comment>Done</comment>');
             $output->writeln('');
 
-            $output->writeln('<info>Export JS files</info>');
-            $jsManager = new JavascriptManager('js', $this->buildOutputPath('/js'));
+            $output->writeln('<info>Exporting JS files</info>');
+            $output->write('  Clearing JS folder... ');
+            $jsFolder = $this->buildOutputPath('/js');
+            if (!FileHelpers::clearFolder($jsFolder)) {
+                throw new Exception("Unable to clear the JS folder.");
+            }
+            $output->writeln('<comment>Done</comment>');
+            $jsManager = new JavascriptManager('assets/js', $jsFolder);
             if (!$jsManager->process($output)) {
                 throw new Exception('Unable to export JS files');
+            }
+            $output->writeln(' <comment>Done</comment>');
+            $output->writeln('');
+
+            $output->writeln('<info>Exporting images</info>');
+            $output->write('  Clearing images folder... ');
+            $imgFolder = $this->buildOutputPath('/images');
+            if (!FileHelpers::clearFolder($imgFolder)) {
+                throw new Exception("Unable to clear the images folder.");
+            }
+            $output->writeln('<comment>Done</comment>');
+            $imgManager = new ImageManager('assets/images', $imgFolder);
+            if (!$imgManager->process($output)) {
+                throw new Exception('Unable to export images files');
             }
             $output->writeln(' <comment>Done</comment>');
             $output->writeln('');
