@@ -68,9 +68,9 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
             if (!$input->getOption(self::STATIC_FILES_ONLY)) {
                 $dashboardExportPath = $input->getOption(self::DASHBOARD_EXPORT);
                 if ($dashboardExportPath === null) {
-                $output->write('<info>Fetching database JSON file... </info>');
-                $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
-                $output->writeln('<comment>Done</comment>');
+                    $output->write('<info>Fetching database JSON file... </info>');
+                    $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
+                    $output->writeln('<comment>Done</comment>');
                 } else {
                     if (!file_exists($dashboardExportPath)) {
                         throw new Exception("Dashboard export file '{$dashboardExportPath}' does not exist");
@@ -120,24 +120,33 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 $output->writeln(' <comment>Done</comment>');
                 $output->writeln('');
 
+                $output->write('<info>Generating 404 page...</info>');
+                $pageNotFoundPath = $this->buildOutputPath('/404.html');
+                $cpg = new PageNotFoundGenerator($jsonData, $pageNotFoundPath);
+                if (!$cpg->generate($this->twigEnvironment)) {
+                    throw new Exception("Unable to generate 404 page.");
+                }
+                $output->writeln(' <comment>Done</comment>');
+                $output->writeln('');
+
                 $output->writeln('<info>Generating album pages...</info>');
                 if (!$input->getOption(self::SKIP_ALBUMS)) {
-                $output->write('  Clearing album pages folder... ');
-                $albumPagesFolder = $this->buildOutputPath('/albums');
-                if (!FileHelpers::clearFolder($albumPagesFolder)) {
-                    throw new Exception("Unable to clear the album pages folder.");
-                }
-                $output->writeln('<comment>Done</comment>');
-
-                foreach ($jsonData as $album) {
-                    $output->write("  Album: {$album['title']} ");
-                    $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
-                    $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
-                        if (!$apg->generate($this->twigEnvironment)) {
-                        throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
+                    $output->write('  Clearing album pages folder... ');
+                    $albumPagesFolder = $this->buildOutputPath('/albums');
+                    if (!FileHelpers::clearFolder($albumPagesFolder)) {
+                        throw new Exception("Unable to clear the album pages folder.");
                     }
-                    $output->writeln('<comment>OK</comment>');
-                }
+                    $output->writeln('<comment>Done</comment>');
+
+                    foreach ($jsonData as $album) {
+                        $output->write("  Album: {$album['title']} ");
+                        $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
+                        $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
+                        if (!$apg->generate($this->twigEnvironment)) {
+                            throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
+                        }
+                        $output->writeln('<comment>OK</comment>');
+                    }
                 } else {
                     $output->writeln('  <comment>Skipping</comment>');
                 }
