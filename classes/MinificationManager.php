@@ -8,23 +8,23 @@ final class MinificationManager extends AbstractFileBasedManager
 {
     public function process(OutputInterface $output): bool
     {
-        $output->write("    Processing JavaScript files...");
+        $output->write("    <comment>Processing JavaScript files...</comment>");
         if (!$this->processJSFiles()) {
             return false;
         }
-        $output->writeln(' <comment>Done</comment>');
+        $output->writeln(' <info>Done</info>');
 
-        $output->write("    Processing CSS files...");
+        $output->write("    <comment>Processing CSS files...</comment>");
         if (!$this->processCSSFiles()) {
             return false;
         }
-        $output->writeln(' <comment>Done</comment>');
+        $output->writeln(' <info>Done</info>');
 
-        $output->write("    Processing HTML files...");
+        $output->write("    <comment>Processing HTML files...</comment>");
         if (!$this->processHTMLFiles()) {
             return false;
         }
-        $output->writeln(' <comment>Done</comment>');
+        $output->writeln(' <info>Done</info>');
 
         return true;
     }

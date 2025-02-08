@@ -24,7 +24,7 @@ final class JavascriptManager
             if (!file_put_contents($outputPath, $jsContent)) {
                 return false;
             }
-            $output->writeln(' <comment>Done</comment>');
+            $output->writeln(' <info>Done</info>');
         }
 
         return true;

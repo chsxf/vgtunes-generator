@@ -4,33 +4,25 @@ final class SearchIndexGenerator
 {
     public function __construct(private array $jsonData, private string $path, private bool $includeInstances, private bool $prettyPrint) {}
 
-    private array $artistList;
-
     public function generate(): bool
     {
-        $this->artistList = [];
+        $artistSlugs = array_keys($this->jsonData['artists']);
+        $artistList = array_values($this->jsonData['artists']);
 
-        foreach ($this->jsonData as $album) {
-            if (!in_array($album['artist'], $this->artistList)) {
-                $this->artistList[] = $album['artist'];
-            }
-        }
-        sort($this->artistList);
-
-        $index = ['artists' => $this->artistList];
+        $index = ['artists' => $artistList];
 
         $index['albums'] = [];
-        foreach ($this->jsonData as $album) {
-            $index['albums'][$album['slug']] = $this->remapAlbum($album);
+        foreach ($this->jsonData['albums'] as $album) {
+            $index['albums'][$album['slug']] = $this->remapAlbum($album, $artistSlugs);
         }
 
         $flags = $this->prettyPrint ? JSON_PRETTY_PRINT : 0;
         return file_put_contents($this->path, json_encode($index, $flags));
     }
 
-    private function remapAlbum(array $album): array
+    private function remapAlbum(array $album, array $artistSlugs): array
     {
-        $artistIndex = array_search($album['artist'], $this->artistList);
+        $artistIndex = array_search($album['artists'][0], $artistSlugs);
         $result = ['t' => $album['title'], 'a' => $artistIndex];
         if ($this->includeInstances) {
             $result['i'] = $this->remapInstances($album['instances']);

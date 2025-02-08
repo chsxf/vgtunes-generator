@@ -8,11 +8,15 @@ final class HomeGenerator
 
     public function generate(Environment $twigEnvironment): bool
     {
-        usort($this->jsonData, function ($a, $b) {
-            return strcmp($b['created_at'], $a['created_at']);
-        });
-        $latestAlbums = array_slice($this->jsonData, 0, 50);
+        $albums = $this->jsonData['albums'];
+        usort($albums, fn($a, $b) => strcmp($b['created_at'], $a['created_at']));
+        $latestAlbums = array_slice($albums, 0, 50);
         shuffle($latestAlbums);
+
+        $latestAlbums = array_map(function ($album) {
+            $album['artist'] = $this->jsonData['artists'][$album['artists'][0]];
+            return $album;
+        }, $latestAlbums);
 
         $baseAlbumUrl = "/albums/";
         $baseCoverUrl = "https://images.vgtunes.chsxf.dev/covers/";

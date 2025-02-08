@@ -29,7 +29,7 @@ final class SCSSCompiler
             if (!file_put_contents($outputPath, $cssContent)) {
                 return false;
             }
-            $output->writeln(' <comment>Done</comment>');
+            $output->writeln(' <info>Done</info>');
         }
 
         return true;

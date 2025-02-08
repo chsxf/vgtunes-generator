@@ -50,74 +50,76 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
             $output->writeln('');
 
             $output->writeln('<info>Compiling SCSS files</info>');
-            $output->write('  Clearing CSS folder... ');
+            $output->write('  <comment>Clearing CSS folder...</comment> ');
             $cssFolder = $this->buildOutputPath('/css');
             if (!FileHelpers::clearFolder($cssFolder)) {
                 throw new Exception("Unable to clear the CSS folder.");
             }
-            $output->writeln('<comment>Done</comment>');
+            $output->writeln('<info>Done</info>');
             $scssCompiler = new SCSSCompiler('assets/scss', $cssFolder);
             if (!$scssCompiler->process($output)) {
                 throw new Exception('Unable to compile SCSS files');
             }
-            $output->writeln(' <comment>Done</comment>');
+            $output->writeln(' <info>Done</info>');
             $output->writeln('');
 
             $output->writeln('<info>Exporting JS files</info>');
-            $output->write('  Clearing JS folder... ');
+            $output->write('  <comment>Clearing JS folder...</comment> ');
             $jsFolder = $this->buildOutputPath('/js');
             if (!FileHelpers::clearFolder($jsFolder)) {
                 throw new Exception("Unable to clear the JS folder.");
             }
-            $output->writeln('<comment>Done</comment>');
+            $output->writeln('<info>Done</info>');
             $jsManager = new JavascriptManager('assets/js', $jsFolder);
             if (!$jsManager->process($output)) {
                 throw new Exception('Unable to export JS files');
             }
-            $output->writeln(' <comment>Done</comment>');
+            $output->writeln(' <info>Done</info>');
             $output->writeln('');
 
             $output->writeln('<info>Exporting images</info>');
-            $output->write('  Clearing images folder... ');
+            $output->write('  <comment>Clearing images folder...</comment> ');
             $imgFolder = $this->buildOutputPath('/images');
             if (!FileHelpers::clearFolder($imgFolder)) {
                 throw new Exception("Unable to clear the images folder.");
             }
-            $output->writeln('<comment>Done</comment>');
+            $output->writeln('<info>Done</info>');
             $imgManager = new ImageManager('assets/images', $imgFolder);
             if (!$imgManager->process($output)) {
                 throw new Exception('Unable to export images files');
             }
-            $output->writeln(' <comment>Done</comment>');
+            $output->writeln(' <info>Done</info>');
             $output->writeln('');
 
             if (!$input->getOption(self::STATIC_FILES_ONLY)) {
-                $dashboardExportPath = $input->getOption(self::DASHBOARD_EXPORT);
-                if ($dashboardExportPath === null) {
-                    $output->write('<info>Fetching database JSON file... </info>');
-                    $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
-                    $output->writeln('<comment>Done</comment>');
-                } else {
-                    if (!file_exists($dashboardExportPath)) {
-                        throw new Exception("Dashboard export file '{$dashboardExportPath}' does not exist");
-                    }
-
-                    $jsonData = json_decode(file_get_contents($dashboardExportPath), flags: JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
-                    if (!is_array($jsonData) || !array_is_list($jsonData)) {
-                        throw new Exception("Invalid JSON format");
-                    }
-                }
-                $referenceCount = count($jsonData);
-                $output->writeln("  {$referenceCount} references found");
-                $output->writeln('');
-
                 $output->writeln('<info>Warming up git hashes cache...</info>');
                 $gitHashCache = new GitHashManager($this->buildOutputPath('/'));
                 if (!$gitHashCache->process($output)) {
                     throw new Exception('Unable to warm up git hashed cache');
                 }
                 $this->twigEnvironment->addGlobal('git_hash_cache', $gitHashCache);
-                $output->writeln(' <comment>Done</comment>');
+                $output->writeln(' <info>Done</info>');
+                $output->writeln('');
+
+                $dashboardExportPath = $input->getOption(self::DASHBOARD_EXPORT);
+                if ($dashboardExportPath === null) {
+                    $output->writeln('<info>Fetching database JSON file... </info>');
+                    $jsonData = $this->fetchJSON($this->currentEnvironment['dashboard_key']);
+                } else {
+                    $output->writeln("<info>Loading dashboard export file '{$dashboardExportPath}'...</info> ");
+                    if (!file_exists($dashboardExportPath)) {
+                        throw new Exception("Dashboard export file '{$dashboardExportPath}' does not exist");
+                    }
+                    $jsonData = json_decode(file_get_contents($dashboardExportPath), flags: JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
+                }
+                if (!isset($jsonData['albums']) || !array_is_list($jsonData['albums']) || empty($jsonData['artists'])) {
+                    throw new Exception("Invalid JSON format");
+                }
+                $albumCount = count($jsonData['albums']);
+                $artistCount = count($jsonData['artists']);
+                $output->writeln("  <comment>Found {$albumCount} albums</comment>");
+                $output->writeln("  <comment>Found {$artistCount} artists</comment>");
+                $output->writeln('<info>Done</info>');
                 $output->writeln('');
 
                 $output->write('<info>Generating search index...</info>');
@@ -127,7 +129,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 if (!$sig->generate()) {
                     throw new Exception("Unable to generate search index.");
                 }
-                $output->writeln(' <comment>Done</comment>');
+                $output->writeln(' <info>Done</info>');
 
                 $output->write('<info>Generating home page...</info>');
                 $homePagePath = $this->buildOutputPath('/index.html');
@@ -135,7 +137,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 if (!$hg->generate($this->twigEnvironment)) {
                     throw new Exception("Unable to generate home page.");
                 }
-                $output->writeln(' <comment>Done</comment>');
+                $output->writeln(' <info>Done</info>');
 
                 $output->write('<info>Generating privacy policy and settings page...</info>');
                 $cookiePrivacyPath = $this->buildOutputPath('/privacy-policy-and-settings.html');
@@ -143,8 +145,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 if (!$cpg->generate($this->twigEnvironment)) {
                     throw new Exception("Unable to generate privacy policy and settings page.");
                 }
-                $output->writeln(' <comment>Done</comment>');
-                $output->writeln('');
+                $output->writeln(' <info>Done</info>');
 
                 $output->write('<info>Generating 404 page...</info>');
                 $pageNotFoundPath = $this->buildOutputPath('/404.html');
@@ -152,38 +153,38 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 if (!$cpg->generate($this->twigEnvironment)) {
                     throw new Exception("Unable to generate 404 page.");
                 }
-                $output->writeln(' <comment>Done</comment>');
+                $output->writeln(' <info>Done</info>');
                 $output->writeln('');
 
                 $output->writeln('<info>Generating album pages...</info>');
                 if (!$input->getOption(self::SKIP_ALBUMS)) {
-                    $output->write('  Clearing album pages folder... ');
+                    $output->write('  <comment>Clearing album pages folder...</comment> ');
                     $albumPagesFolder = $this->buildOutputPath('/albums');
                     if (!FileHelpers::clearFolder($albumPagesFolder)) {
                         throw new Exception("Unable to clear the album pages folder.");
                     }
-                    $output->writeln('<comment>Done</comment>');
+                    $output->writeln('<info>Done</info>');
 
-                    foreach ($jsonData as $album) {
-                        $output->write("  Album: {$album['title']} ");
+                    foreach ($jsonData['albums'] as $album) {
+                        $output->write("  <comment>Album: {$album['title']}</comment> ");
                         $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
-                        $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath);
+                        $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath, $jsonData['artists']);
                         if (!$apg->generate($this->twigEnvironment)) {
                             throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
                         }
-                        $output->writeln('<comment>OK</comment>');
+                        $output->writeln('<info>OK</info>');
                     }
                 } else {
-                    $output->writeln('  <comment>Skipping</comment>');
+                    $output->writeln('  <info>Skipping</info>');
                 }
                 $output->writeln('');
             }
 
             $output->writeln('<info>Replacements...</info>');
             $rm = new ReplacementsManager($this->buildOutputPath('/'), $this->currentEnvironment['replacements']);
-            $output->writeln('  Populating files to apply replacements...');
+            $output->writeln('  <comment>Populating files to apply replacements...</comment>');
             $rm->populate($output);
-            $output->writeln('  Processing files...');
+            $output->writeln('  <comment>Processing files...</comment>');
             if (!$rm->process($output)) {
                 throw new Exception('Unable to apply replacements');
             }
@@ -192,17 +193,17 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
 
             $output->write('<info>Minification...</info>');
             if (empty($this->currentEnvironment['minify']) || $input->getOption(self::SKIP_MINIFY)) {
-                $output->writeln(' <comment>Skipped</comment>');
+                $output->writeln(' <info>Skipped</info>');
             } else {
                 $output->writeln('');
                 $mm = new MinificationManager($this->buildOutputPath('/'));
-                $output->writeln('  Populating files to minify...');
+                $output->writeln('  <comment>Populating files to minify...</comment>');
                 $mm->populate($output);
-                $output->writeln('  Processing files...');
+                $output->writeln('  <comment>Processing files...</comment>');
                 if (!$mm->process($output)) {
                     throw new Exception('Unable to complete minification');
                 }
-                $output->writeln('  <comment>Minification Complete</comment>');
+                $output->writeln('  <info>Minification Complete</info>');
             }
             $output->writeln('');
 
@@ -229,11 +230,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
             throw new Exception("Failed to fetch JSON file");
         }
 
-        $parsedContent = json_decode($content, flags: JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
-        if (!is_array($parsedContent) || !array_is_list($parsedContent)) {
-            throw new Exception("Invalid JSON format");
-        }
-        return $parsedContent;
+        return json_decode($content, flags: JSON_THROW_ON_ERROR | JSON_OBJECT_AS_ARRAY);
     }
 
     private function buildDashboardUrl(string $path): string

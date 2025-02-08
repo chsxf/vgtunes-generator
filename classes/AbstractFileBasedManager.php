@@ -18,10 +18,10 @@ abstract class AbstractFileBasedManager
 
         $indentPrefix = str_pad('', $indent);
 
-        $output->writeln(sprintf("{$indentPrefix}Found %d JavaScript files", count($this->jsFiles)));
-        $output->writeln(sprintf("{$indentPrefix}Found %d CSS files", count($this->cssFiles)));
+        $output->writeln(sprintf("{$indentPrefix}<comment>Found %d JavaScript files</comment>", count($this->jsFiles)));
+        $output->writeln(sprintf("{$indentPrefix}<comment>Found %d CSS files</comment>", count($this->cssFiles)));
         if ($includeHtmlFiles) {
-            $output->writeln(sprintf("{$indentPrefix}Found %d HTML files", count($this->htmlFiles)));
+            $output->writeln(sprintf("{$indentPrefix}<comment>Found %d HTML files</comment>", count($this->htmlFiles)));
         }
         return true;
     }

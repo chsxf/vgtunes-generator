@@ -44,7 +44,7 @@ final class ImageManager
                 return false;
             }
 
-            $output->writeln(' <comment>Done</comment>');
+            $output->writeln(' <info>Done</info>');
         }
 
         return true;
