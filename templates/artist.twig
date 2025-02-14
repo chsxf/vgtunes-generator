@@ -56,7 +56,7 @@
 				{% for album in artist.albums %}
 					<li class="album">
 						<a href="/albums/{{ album.slug }}/">
-							<img src="{{ base_cover_url }}/{{ album.slug }}/cover_100.webp"/>
+							<img class="cover" src="{{ base_cover_url }}/{{ album.slug }}/cover_100.webp"/>
 							<span class="title">{{ album.title }}</span>
 							<div class="platforms">
 								{% for platform, platformId in album.instances %}
@@ -72,6 +72,7 @@
 		<div id="footer">
 			<div class="logo"><img src="/images/logo-icon-white-128px.png"/>
 				VGTunes</div>
+			{{ include('socials.twig') }}
 			<div class="legal">{{ include('legal-footer.twig') }}</div>
 		</div>
 

@@ -1,21 +1,114 @@
 {% extends 'main-pages-base.twig' %}
 
-{% block header %}
-	<h1 class="align-left">Latest Additions</h1>
+{% block head %}
+	{{ parent() }}
 
-	<div class="buttons-container">
-		<a href="https://bit.ly/vgtunes-album-submission" id="submit-album-button" class="button" target="_blank">Submit an album</a>
-		<a href="https://bit.ly/vgtunes-error-report" id="report-error-button" class="button" target="_blank">Report an error</a>
-	</div>
+	<script type="text/javascript" src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
+
+	<style type="text/css">
+		#header {
+			box-shadow: 0 5px 10px black;
+		}
+	</style>
 {% endblock %}
 
+{% block topbar %}{% endblock %}
+
 {% block content %}
-	<div class="flex-grid scrollview">
-		{% for album in latest_albums %}
-			{% set cover_url = "%s%s/cover_250.webp"|format(base_cover_url, album.slug) %}
-			<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug }}/" title="{{ album.title }} - {{ album.artist }}">
-				<div class="blurry-background" style="background-image: url('{{ cover_url }}')"></div>
-			</a>
-		{% endfor %}
+	{% set half_latest_album_count = latest_albums|length / 2 %}
+	<div class="home scrollview">
+		<div class="column">
+			<div class="latest-additions latest-additions-before">
+				<h1>Latest Additions</h1>
+				<div class="album-list flex-grid">
+					{% for i in half_latest_album_count..(latest_albums|length - 1) %}
+						{% with { album: latest_albums[i]} %}
+						{% set cover_url = "%s%s/cover_100.webp"|format(base_cover_url, album.slug) %}
+						<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug }}/" title="{{ album.title }} - {{ album.artist }}"></a>
+						{% endwith %}
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="home-content">
+				<section class="about">
+					<p>Fans of video game music, rejoice!</p>
+					<p>On
+						<span class="logo">VGTunes</span>, find references to more than
+						{{ album_count - album_count % 50 }}
+						original video game soundtracks on your favorite streaming platforms.</p>
+					<p>We support Apple Music, Bandcamp, Deezer, and Spotify.<br/>And more are on the way!</p>
+
+					{{ include('socials.twig', { cta: true }) }}
+				</section>
+
+				{% if featured_album is not null %}
+					<section class="featured-album home-block">
+						{% set album_url = "%s%s/"|format(base_album_url, featured_album.slug) %}
+						<div class="blurred-cover" style="background-image: url('{{ " %s%s/cover_250.webp"|format(base_cover_url, featured_album.slug) }}')"></div>
+						<div class="featured-album-details">
+							<h2>Featured album</h2>
+							<a class="album" style="background-image: url('{{ " %s%s/cover_100.webp"|format(base_cover_url, featured_album.slug) }}')" href="{{ album_url }}" title="{{ featured_album.title }} - {{ featured_album.artists}}"></a>
+							<span class="album-title album-block">
+								<a href="{{ album_url }}">{{ featured_album.title }}</a>
+							</span>
+							<span class="album-by album-block">by
+								<span class="album-artist">
+									<a href="{{ base_artist_url }}{{ featured_album.artists[0] }}/">{{ featured_album.artist }}</a>
+								</span>
+							</span>
+							<div class="platforms">
+								{% for platform, platformId in featured_album.instances %}
+									<img src="/images/platform-icons/{{ platform }}.png" alt="{{ platform_names[platform] }}"/>
+								{% endfor %}
+							</div>
+							<a href="#" class="shbtn" data-share-url="{{ album_url }}" data-share-text="{{ featured_album.title }} - {{ featured_album.artist }}"><img src="/images/share-icon.png"/></a>
+						</div>
+					</section>
+				{% endif %}
+
+				<section class="catalogs home-block">
+					<h2>Explore the Database</h2>
+					<a class="button" href="/catalog/albums/a">
+						<span class="button-text">Album Catalog</span>
+						<span class="description">Search through
+							{{ album_count }}
+							albums</span>
+					</a>
+					<a class="button" href="/catalog/artists/a">
+						<span class="button-text">Artist Catalog</span>
+						<span class="description">Search through
+							{{ artist_count }}
+							artists</span>
+					</a>
+				</section>
+
+				<section class="tools home-block">
+					<h2>Contribute</h2>
+					<a href="https://bit.ly/vgtunes-album-submission" id="submit-album-button" class="button" target="_blank">
+						<span class="description">Something's missing?</span>
+						<span class="button-text">Submit an album</span>
+					</a>
+					<a href="https://bit.ly/vgtunes-error-report" id="report-error-button" class="button" target="_blank">
+						<span class="description">Found an inconsistency?</span>
+						<span class="button-text">Report an error</span>
+					</a>
+				</section>
+			</div>
+
+			<div class="latest-additions latest-additions-after">
+				<h1>Latest Additions</h1>
+				<div class="album-list flex-grid">
+					{% for i in 0..(half_latest_album_count - 1) %}
+						{% with { album: latest_albums[i]} %}
+						{% set cover_url = "%s%s/cover_100.webp"|format(base_cover_url, album.slug) %}
+						<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug }}/" title="{{ album.title }} - {{ album.artist }}"></a>
+						{% endwith %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
 	</div>
+
+	<div id="copied-to-clipboard-toast">Link copied to clipboard.</div>
 {% endblock %}

@@ -220,6 +220,28 @@ body.album-page {
                     vertical-align: -10%;
                 }
             }
+
+            &.socials {
+                margin-top: 10px;
+                margin-bottom: 10px;
+
+                a {
+                    margin-right: 5px;
+                    opacity: 50%;
+
+                    img {
+                        height: 24px;
+                    }
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+
+                    &:hover {
+                        opacity: 100%;
+                    }
+                }
+            }
         }
     }
 

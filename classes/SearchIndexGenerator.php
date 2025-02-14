@@ -7,11 +7,13 @@ final class SearchIndexGenerator
     public function generate(): bool
     {
         $artistSlugs = array_keys($this->jsonData['artists']);
-        $artistList = array_values($this->jsonData['artists']);
 
-        $index = ['artists' => $artistList];
+        $index = ['artists' => [], 'albums' => []];
 
-        $index['albums'] = [];
+        foreach ($this->jsonData['artists'] as $artistSlug => $artistName) {
+            $index['artists'][] = [$artistName, $artistSlug];
+        }
+
         foreach ($this->jsonData['albums'] as $album) {
             $index['albums'][$album['slug']] = $this->remapAlbum($album, $artistSlugs);
         }

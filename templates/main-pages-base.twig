@@ -16,6 +16,8 @@
 		<meta property="og:description" content="Get links to your favorite original video game soundtracks on Deezer, Spotify and Apple Music.">
 
 		{{ include('common-head.twig') }}
+
+		{% block head %}{% endblock %}
 	</head>
 	<body>
 		<div id="main-container">
@@ -40,17 +42,20 @@
 			</div>
 
 			<div id="main-section">
-				<div id="top-bar-container">
-					<div class="column"> {% block header %}{% endblock %}
+				{% block topbar %}
+					<div id="top-bar-container">
+						<div class="column">
+							{% block header %}{% endblock %}
 						</div>
 					</div>
+				{% endblock %}
 
-					{% block content %}{% endblock %}
-				</div>
-
-				<div id="footer">
-					<div class="column">{{ include('legal-footer.twig') }}</div>
-				</div>
+				{% block content %}{% endblock %}
 			</div>
-		</body>
-	</html>
+
+			<div id="footer">
+				<div class="column">{{ include('legal-footer.twig') }}</div>
+			</div>
+		</div>
+	</body>
+</html>
