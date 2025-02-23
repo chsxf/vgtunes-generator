@@ -12,12 +12,8 @@ final class CatalogGenerator
 
     private static ?array $allLetterKeys = null;
 
-    public function __construct(private string $baseUrl, private array $jsonData, private IOutputPathBuilder $outputPathBuilder)
+    public function __construct(private array $jsonData, private IOutputPathBuilder $outputPathBuilder)
     {
-        if (self::$allLetterKeys === null) {
-            self::$allLetterKeys = array_merge(range('A', 'Z'), [self::OTHERS_KEY]);
-        }
-
         $this->albumBuckets = $this->prepareAlbumBuckets();
         $this->artistBuckets = $this->prepareArtistBuckets();
     }
@@ -72,8 +68,12 @@ final class CatalogGenerator
         return $buckets;
     }
 
-    private static function prepareEmptyBuckets(): array
+    public static function prepareEmptyBuckets(): array
     {
+        if (self::$allLetterKeys === null) {
+            self::$allLetterKeys = array_merge(range('A', 'Z'), [self::OTHERS_KEY]);
+        }
+
         $values = array_pad([], count(self::$allLetterKeys), []);
         return array_combine(self::$allLetterKeys, $values);
     }

@@ -2,7 +2,7 @@
 
 final class RobotsTxtGenerator
 {
-    public function __construct(private readonly string $path, private readonly string $baseUrl) {}
+    public function __construct(private readonly string $path, private readonly ISiteUrlBuilder $siteUrlBuilder) {}
 
     public function generate(): bool
     {
@@ -12,7 +12,7 @@ final class RobotsTxtGenerator
             ]
         ];
 
-        $sitemap = "{$this->baseUrl}sitemap.xml";
+        $sitemap = $this->siteUrlBuilder->buildSiteUrl("sitemap.xml");
 
         $fileContent = '';
         foreach ($rules as $rule => $disallows) {

@@ -6,7 +6,7 @@ final class ArtistPageGenerator
 {
     private array $artist;
 
-    public function __construct(private string $baseUrl, private string $path, string $artistSlug, string $artistName, private array $albums)
+    public function __construct(private readonly ISiteUrlBuilder $siteUrlBuilder, private string $path, string $artistSlug, string $artistName, private array $albums)
     {
         $this->artist = [
             'slug' => $artistSlug,
@@ -22,7 +22,7 @@ final class ArtistPageGenerator
             return false;
         }
 
-        $pageUrl = "{$this->baseUrl}artist/{$this->artist['slug']}/";
+        $pageUrl = $this->siteUrlBuilder->buildSiteUrl("artist/{$this->artist['slug']}/");
         $baseCoverUrl = "https://images.vgtunes.chsxf.dev/covers/";
 
         $generatedHtml = $twigEnvironment->render('artist.twig', [

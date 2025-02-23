@@ -9,7 +9,7 @@ use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
 #[AsCommand("generate", "Generate website content")]
-final class GenerateCommand extends AbstractCommand implements IOutputPathBuilder
+final class GenerateCommand extends AbstractCommand implements IOutputPathBuilder, ISiteUrlBuilder
 {
     private ?array $currentEnvironment = null;
     private ?string $outputPath = null;
@@ -164,9 +164,18 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
 
                 $output->write('<info>Generating robots.txt file...</info>');
                 $robotsTxtPath = $this->buildOutputPath('/robots.txt');
-                $rtg = new RobotsTxtGenerator($robotsTxtPath, $this->currentEnvironment['base_url']);
+                $rtg = new RobotsTxtGenerator($robotsTxtPath, $this);
                 if (!$rtg->generate()) {
                     throw new Exception("Unable to generate robots.txt file.");
+                }
+                $output->writeln(' <info>Done</info>');
+                $output->writeln('');
+
+                $output->write('<info>Generating sitemap.xml file...</info>');
+                $sitemapPath = $this->buildOutputPath('/sitemap.xml');
+                $smg = new SitemapGenerator($jsonData, $sitemapPath, $this);
+                if (!$smg->generate($this->twigEnvironment)) {
+                    throw new Exception("Unable to generate sitemap.xml file.");
                 }
                 $output->writeln(' <info>Done</info>');
                 $output->writeln('');
@@ -183,7 +192,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                     foreach ($jsonData['albums'] as $album) {
                         $output->write("  <comment>Album: {$album['title']}</comment> ");
                         $filePath = $this->buildOutputPath("/albums/{$album['slug']}/index.html");
-                        $apg = new AlbumPageGenerator($this->currentEnvironment['base_url'], $album, $filePath, $jsonData['artists']);
+                        $apg = new AlbumPageGenerator($this, $album, $filePath, $jsonData['artists']);
                         if (!$apg->generate($this->twigEnvironment)) {
                             throw new Exception("Unable to generate page album for slug '{$album['slug']}'");
                         }
@@ -207,7 +216,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                         $output->write("  <comment>Artist: {$name}</comment> ");
                         $filePath = $this->buildOutputPath("/artists/{$slug}/index.html");
                         $albums = array_values(array_filter($jsonData['albums'], fn($album) => in_array($slug, $album['artists'])));
-                        $apg = new ArtistPageGenerator($this->currentEnvironment['base_url'], $filePath, $slug, $name, $albums);
+                        $apg = new ArtistPageGenerator($this, $filePath, $slug, $name, $albums);
                         if (!$apg->generate($this->twigEnvironment)) {
                             throw new Exception("Unable to generate artist page for slug '{$slug}'");
                         }
@@ -227,7 +236,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                     }
                     $output->writeln('<info>Done</info>');
 
-                    $cg = new CatalogGenerator($this->currentEnvironment['base_url'], $jsonData, $this);
+                    $cg = new CatalogGenerator($jsonData, $this);
                     if (!$cg->generate($output, $this->twigEnvironment)) {
                         throw new Exception("Unable to generate catalog pages");
                     }
@@ -245,7 +254,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
             if (!$rm->process($output)) {
                 throw new Exception('Unable to apply replacements');
             }
-            $output->writeln('  <comment>Replacements Complete</comment>');
+            $output->writeln('  <info>Replacements Complete</info>');
             $output->writeln('');
 
             $output->write('<info>Minification...</info>');
@@ -255,7 +264,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 $output->writeln('');
                 $mm = new MinificationManager($this->buildOutputPath('/'));
                 $output->writeln('  <comment>Populating files to minify...</comment>');
-                $mm->populate($output);
+                $mm->populate($output, additionalFiles: [$this->buildOutputPath('/sitemap.xml')]);
                 $output->writeln('  <comment>Processing files...</comment>');
                 if (!$mm->process($output)) {
                     throw new Exception('Unable to complete minification');
@@ -293,6 +302,11 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
     private function buildDashboardUrl(string $path): string
     {
         return "{$this->currentEnvironment['dashboard_url']}{$path}";
+    }
+
+    public function buildSiteUrl(string $relativePath): string
+    {
+        return "{$this->currentEnvironment['base_url']}{$relativePath}";
     }
 
     public function buildOutputPath(string $relativePath): string
