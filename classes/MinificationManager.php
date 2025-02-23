@@ -26,6 +26,14 @@ final class MinificationManager extends AbstractFileBasedManager
         }
         $output->writeln(' <info>Done</info>');
 
+        if (!empty($this->additionalFiles)) {
+            $output->write("    <comment>Processing additional files...</comment>");
+            if (!$this->processAdditionalFiles()) {
+                return false;
+            }
+            $output->writeln(' <info>Done</info>');
+        }
+
         return true;
     }
 
@@ -62,6 +70,13 @@ final class MinificationManager extends AbstractFileBasedManager
         return true;
     }
 
+    private static function removeLeadingSpaces(string $unprocessedContent): string
+    {
+        $lines = explode("\n", $unprocessedContent);
+        $lines = array_map(ltrim(...), $lines);
+        return implode("\n", $lines);
+    }
+
     private function processHTMLFiles(): bool
     {
         foreach ($this->htmlFiles as $fullPath) {
@@ -79,9 +94,25 @@ final class MinificationManager extends AbstractFileBasedManager
                 }
             }
 
-            $lines = explode("\n", $processedContent);
-            $lines = array_map(fn($line) => preg_replace('/^\s+/', '', $line), $lines);
-            $processedContent = implode("\n", $lines);
+            $processedContent = self::removeLeadingSpaces($processedContent);
+
+            if (file_put_contents($fullPath, $processedContent) === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function processAdditionalFiles(): bool
+    {
+        foreach ($this->additionalFiles as $fullPath) {
+            if (($unprocessedContent = file_get_contents($fullPath)) === false) {
+                return false;
+            }
+
+            $processedContent = $unprocessedContent;
+            $processedContent = self::removeLeadingSpaces($processedContent);
 
             if (file_put_contents($fullPath, $processedContent) === false) {
                 return false;

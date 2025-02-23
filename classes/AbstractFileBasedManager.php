@@ -7,21 +7,31 @@ abstract class AbstractFileBasedManager
     protected array $jsFiles = [];
     protected array $cssFiles = [];
     protected array $htmlFiles = [];
+    protected array $additionalFiles = [];
 
     public function __construct(protected readonly string $basePath) {}
 
-    public final function populate(OutputInterface $output, bool $includeHtmlFiles = true, int $indent = 4): bool
+    public final function populate(OutputInterface $output, bool $includeHtmlFiles = true, array $additionalFiles = [], int $indent = 4): bool
     {
         if (!$this->populatePath($this->basePath, $includeHtmlFiles)) {
             return false;
         }
 
+        foreach ($additionalFiles as $additionalFile) {
+            if (file_exists($additionalFile) && is_file($additionalFile)) {
+                $this->additionalFiles[] = $additionalFile;
+            }
+        }
+
         $indentPrefix = str_pad('', $indent);
 
-        $output->writeln(sprintf("{$indentPrefix}<comment>Found %d JavaScript files</comment>", count($this->jsFiles)));
-        $output->writeln(sprintf("{$indentPrefix}<comment>Found %d CSS files</comment>", count($this->cssFiles)));
+        $output->writeln(sprintf("%s<comment>Found %d JavaScript files</comment>", $indentPrefix, count($this->jsFiles)));
+        $output->writeln(sprintf("%s<comment>Found %d CSS files</comment>", $indentPrefix, count($this->cssFiles)));
         if ($includeHtmlFiles) {
-            $output->writeln(sprintf("{$indentPrefix}<comment>Found %d HTML files</comment>", count($this->htmlFiles)));
+            $output->writeln(sprintf("%s<comment>Found %d HTML files</comment>", $indentPrefix, count($this->htmlFiles)));
+        }
+        if (!empty($this->additionalFiles)) {
+            $output->writeln(sprintf("%s<comment>Found %d additional files</comment>", $indentPrefix, count($this->additionalFiles)));
         }
         return true;
     }

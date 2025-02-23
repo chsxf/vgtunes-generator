@@ -4,7 +4,7 @@ use Twig\Environment;
 
 final class AlbumPageGenerator
 {
-    public function __construct(private string $baseUrl, private array $album, private string $path, private array $artistMap) {}
+    public function __construct(private readonly ISiteUrlBuilder $siteUrlBuilder, private array $album, private string $path, private array $artistMap) {}
 
     public function generate(Environment $twigEnvironment): bool
     {
@@ -13,7 +13,7 @@ final class AlbumPageGenerator
             return false;
         }
 
-        $pageUrl = "{$this->baseUrl}albums/{$this->album['slug']}/";
+        $pageUrl = $this->siteUrlBuilder->buildSiteUrl("albums/{$this->album['slug']}/");
         $coverUrl = "https://images.vgtunes.chsxf.dev/covers/{$this->album['slug']}/cover_500.webp";
 
         $this->album['artist'] = $this->artistMap[$this->album['artists'][0]];
