@@ -162,6 +162,15 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 $output->writeln(' <info>Done</info>');
                 $output->writeln('');
 
+                $output->write('<info>Generating robots.txt file...</info>');
+                $robotsTxtPath = $this->buildOutputPath('/robots.txt');
+                $rtg = new RobotsTxtGenerator($robotsTxtPath, $this->currentEnvironment['base_url']);
+                if (!$rtg->generate()) {
+                    throw new Exception("Unable to generate robots.txt file.");
+                }
+                $output->writeln(' <info>Done</info>');
+                $output->writeln('');
+
                 $output->writeln('<info>Generating album pages...</info>');
                 if (!$input->getOption(self::SKIP_ALBUMS)) {
                     $output->write('  <comment>Clearing album pages folder...</comment> ');
