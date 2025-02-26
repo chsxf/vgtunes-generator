@@ -4,7 +4,7 @@
 		<title>VGTunes
 			{% block title %}{% endblock %}
 		</title>
-		<meta name="descripton" content="Get links to your favorite original video game soundtracks on Deezer, Spotify and Apple Music.">
+		<meta name="description" content="{{ site_description }}">
 		<link rel="preload" href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" as="style">
 		<link href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" rel="stylesheet">
 		<script src="/js/search.js?t={{ git_hash_cache.getHash('js/search.js') }}" defer></script>
@@ -13,7 +13,7 @@
 		<meta property="og:title" content="VGTunes">
 		<meta property="og:image" content="{{ base_url }}images/logo-white-background-512px.png">
 		<meta property="og:url" content="{{ base_url }}">
-		<meta property="og:description" content="Get links to your favorite original video game soundtracks on Deezer, Spotify and Apple Music.">
+		<meta property="og:description" content="{{ site_description }}">
 
 		{{ include('common-head.twig') }}
 
