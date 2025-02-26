@@ -21,9 +21,9 @@
 				{% for album in bucket %}
 					<li>
 						{% set imgsrc = "https://images.vgtunes.chsxf.dev/covers/%s/cover_500.webp"|format(album.slug) %}
-						<img src="{{ imgsrc }}"/>
+						<img src="{{ imgsrc }}" alt="">
 						<a href="/albums/{{ album.slug }}">
-							<img src="{{ imgsrc }}" width="64">
+							<img src="{{ imgsrc }}" width="64" alt="Cover art">
 							<span class="title">{{ album.title}}</span>
 							<span class="artist">{{ album.artist }}</span>
 						</a>

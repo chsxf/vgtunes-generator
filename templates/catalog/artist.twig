@@ -20,9 +20,9 @@
 			<ul id="catalog-listing">
 				{% for artist in bucket %}
 					<li>
-						<img src="/images/artist-silhouette.png">
+						<img src="/images/artist-silhouette.png" alt="">
 						<a href="/artists/{{ artist.slug }}">
-							<img src="/images/artist-silhouette.png" width="64">
+							<img src="/images/artist-silhouette.png" width="64" alt="">
 							<span class="name">{{ artist.name }}</span>
 							<span class="album_count">{{ '%d album(s) in the database'|format(artist.album_count) }}</span>
 						</a>

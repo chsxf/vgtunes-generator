@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
+		{{ include('common-head.twig') }}
+
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="Listen to this album on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
 
@@ -17,18 +19,16 @@
 		<title>{{ artist.name }}
 			| VGTunes</title>
 
-		<link rel="preload" href="/css/artist-style.css?t={{ git_hash_cache.getHash('css/artist-style.css') }}" as="style"/>
-		<link href="/css/artist-style.css?t={{ git_hash_cache.getHash('css/artist-style.css') }}" rel="stylesheet"/>
-		<style type="text/css">
+		<link rel="preload" href="/css/artist-style.css?t={{ git_hash_cache.getHash('css/artist-style.css') }}" as="style">
+		<link href="/css/artist-style.css?t={{ git_hash_cache.getHash('css/artist-style.css') }}" rel="stylesheet">
+		<style>
 			.with-cover-image {
 				background-image: url('{{ base_cover_url}}/{{ artist.albums[0].slug }}/cover_500.webp');
 			}
 		</style>
 
-		<script type="text/javascript" src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
-		<script type="text/javascript" src="/js/artist.js?t={{ git_hash_cache.getHash('js/artist.js') }}" defer></script>
-
-		{{ include('common-head.twig') }}
+		<script src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
+		<script src="/js/artist.js?t={{ git_hash_cache.getHash('js/artist.js') }}" defer></script>
 	</head>
 	<body class="artist-page">
 		<div id="back-cover" class="with-cover-image">
@@ -36,7 +36,7 @@
 		</div>
 		<div id="header">
 			<div class="logo">
-				<a href="/"><img src="/images/logo-icon-white-128px.png"/>
+				<a href="/"><img src="/images/logo-icon-white-128px.png" alt="VGTunes Logo">
 					VGTunes</a>
 			</div>
 
@@ -49,18 +49,18 @@
 			<div id="infos">
 				<h1>{{ artist.name }}</h1>
 
-				<a href="#" class="shbtn" data-share-url="{{ page_url }}" data-share-text="{{ artist.name }}"><img src="/images/share-icon.png"/></a>
+				<a href="#" class="shbtn" data-share-url="{{ page_url }}" data-share-text="{{ artist.name }}"><img src="/images/share-icon.png" alt="Share"></a>
 			</div>
 
 			<ul id="links">
 				{% for album in artist.albums %}
 					<li class="album">
 						<a href="/albums/{{ album.slug }}/">
-							<img class="cover" src="{{ base_cover_url }}/{{ album.slug }}/cover_100.webp"/>
+							<img class="cover" src="{{ base_cover_url }}/{{ album.slug }}/cover_100.webp" alt="Cover art">
 							<span class="title">{{ album.title }}</span>
 							<div class="platforms">
 								{% for platform, platformId in album.instances %}
-									<img src="/images/platform-icons/{{ platform }}.png" alt="{{ platform_names[platform] }}"/>
+									<img src="/images/platform-icons/{{ platform }}.png" alt="{{ platform_names[platform] }}">
 								{% endfor %}
 							</div>
 						</a>
@@ -70,7 +70,7 @@
 		</div>
 
 		<div id="footer">
-			<div class="logo"><img src="/images/logo-icon-white-128px.png"/>
+			<div class="logo"><img src="/images/logo-icon-white-128px.png" alt="VGTunes Logo">
 				VGTunes</div>
 			{{ include('socials.twig') }}
 			<div class="legal">{{ include('legal-footer.twig') }}</div>

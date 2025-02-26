@@ -3,9 +3,9 @@
 {% block head %}
 	{{ parent() }}
 
-	<script type="text/javascript" src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
+	<script src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
 
-	<style type="text/css">
+	<style>
 		#header {
 			box-shadow: 0 5px 10px black;
 		}
@@ -32,12 +32,12 @@
 
 			<div class="home-content">
 				<section class="about">
-					<p>Fans of video game music, rejoice!</p>
+					<h2>Fans of video game music, rejoice!</h2>
 					<p>On
 						<span class="logo">VGTunes</span>, find references to more than
 						{{ album_count - album_count % 50 }}
 						original video game soundtracks on your favorite streaming platforms.</p>
-					<p>We support Apple Music, Bandcamp, Deezer, and Spotify.<br/>And more are on the way!</p>
+					<p>We support Apple Music, Bandcamp, Deezer, and Spotify.<br>And more are on the way!</p>
 
 					{{ include('socials.twig', { cta: true }) }}
 				</section>
@@ -59,15 +59,15 @@
 							</span>
 							<div class="platforms">
 								{% for platform, platformId in featured_album.instances %}
-									<img src="/images/platform-icons/{{ platform }}.png" alt="{{ platform_names[platform] }}"/>
+									<img src="/images/platform-icons/{{ platform }}.png" alt="{{ platform_names[platform] }}">
 								{% endfor %}
 							</div>
-							<a href="#" class="shbtn" data-share-url="{{ album_url }}" data-share-text="{{ featured_album.title }} - {{ featured_album.artist }}"><img src="/images/share-icon.png"/></a>
+							<a href="#" class="shbtn" data-share-url="{{ album_url }}" data-share-text="{{ featured_album.title }} - {{ featured_album.artist }}"><img src="/images/share-icon.png" alt="Share"></a>
 						</div>
 					</section>
 				{% endif %}
 
-				<section class="catalogs home-block">
+				<section class=" catalogs home-block">
 					<h2>Explore the Database</h2>
 					<a class="button" href="/catalog/albums/a">
 						<span class="button-text">Album Catalog</span>

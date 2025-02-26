@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html charset="utf-8">
+<html lang="en">
 	<head>
 		<title>VGTunes
 			{% block title %}{% endblock %}
 		</title>
 		<meta name="descripton" content="Get links to your favorite original video game soundtracks on Deezer, Spotify and Apple Music.">
-		<link rel="preload" href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" as="style"/>
-		<link href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" rel="stylesheet"/>
-		<script type="text/javascript" src="/js/search.js?t={{ git_hash_cache.getHash('js/search.js') }}" defer></script>
+		<link rel="preload" href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" as="style">
+		<link href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" rel="stylesheet">
+		<script src="/js/search.js?t={{ git_hash_cache.getHash('js/search.js') }}" defer></script>
 
 		<meta property="og:site_name" content="VGTunes">
 		<meta property="og:title" content="VGTunes">
@@ -26,12 +26,12 @@
 			<div id="header">
 				<div class="column">
 					<div class="logo">
-						<a href="/"><img src="/images/logo-icon-white-128px.png"/>
+						<a href="/"><img src="/images/logo-icon-white-128px.png" alt="VGTunes Logo">
 							VGTunes</a>
 					</div>
 					<div class="search">
-						<img src="/images/looking-glass.svg" class="looking-glass"/>
-						<input type="text" id="search-terms" placeholder="Loading search index..." disabled/>
+						<img src="/images/looking-glass.svg" class="looking-glass" alt="Search">
+						<input type="text" id="search-terms" placeholder="Loading search index..." disabled>
 						<div id="results-dropdown">
 							<ul id="results-list">
 								<li class="no-result">No results found</li>
