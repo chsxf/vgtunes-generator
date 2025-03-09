@@ -28,6 +28,10 @@ final class HomeGenerator
             $matchingAlbum = array_filter($this->jsonData['albums'], fn($album) => $album['slug'] == $featuredSlug);
             $featuredAlbum = reset($matchingAlbum);
             $featuredAlbum['artist'] = $this->jsonData['artists'][$featuredAlbum['artists'][0]];
+
+            if (array_key_exists('steam_soundtrack', $featuredAlbum['instances'])) {
+                unset($featuredAlbum['instances']['steam_game']);
+            }
         }
 
         $generatedHtml = $twigEnvironment->render('home.twig', [

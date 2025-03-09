@@ -1,0 +1,9 @@
+<li class="platform platform-{{ platform }}">
+	<div class="veil"></div>
+	<a href="{{ platformUrl[0] }}" class="platform-regular-link">Listen &gt;</a>
+	<a href="{{ platformUrl[0] }}" target="_blank" class="platform-web-link {%- if platformUrl|length == 1 %} platform-web-link-large{% endif %}">Listen on the web &gt;</a>
+	{% if platformUrl|length > 1 %}
+		<a href="{{ platformUrl[1] }}" class="platform-app-link">Open in app &gt;</a>
+	{% endif %}
+	<div class="logo"></div>
+</li>

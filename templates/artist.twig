@@ -60,7 +60,9 @@
 							<span class="title">{{ album.title }}</span>
 							<div class="platforms">
 								{% for platform, platformId in album.instances %}
-									<img src="/images/platform-icons/{{ platform }}.png" alt="{{ platform_names[platform] }}">
+									{% if platform != 'steam_game' or album.instances['steam_soundtrack'] is not defined %}
+										<img src="/images/platform-icons/{{ platform }}.png" title="{{ platform_names[platform] }}">
+									{% endif %}
 								{% endfor %}
 							</div>
 						</a>

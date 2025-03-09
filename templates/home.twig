@@ -48,7 +48,7 @@
 						<div class="blurred-cover" style="background-image: url('{{ " %s%s/cover_250.webp"|format(base_cover_url, featured_album.slug) }}')"></div>
 						<div class="featured-album-details">
 							<h2>Featured album</h2>
-							<a class="album" style="background-image: url('{{ " %s%s/cover_100.webp"|format(base_cover_url, featured_album.slug) }}')" href="{{ album_url }}" title="{{ featured_album.title }} - {{ featured_album.artists}}"></a>
+							<a class="album" style="background-image: url('{{ " %s%s/cover_100.webp"|format(base_cover_url, featured_album.slug) }}')" href="{{ album_url }}" title="{{ featured_album.title }} - {{ featured_album.artist }}"></a>
 							<span class="album-title album-block">
 								<a href="{{ album_url }}">{{ featured_album.title }}</a>
 							</span>
@@ -59,7 +59,7 @@
 							</span>
 							<div class="platforms">
 								{% for platform, platformId in featured_album.instances %}
-									<img src="/images/platform-icons/{{ platform }}.png" alt="{{ platform_names[platform] }}">
+									<img src="/images/platform-icons/{{ platform }}.png" title="{{ platform_names[platform] }}">
 								{% endfor %}
 							</div>
 							<a href="#" class="shbtn" data-share-url="{{ album_url }}" data-share-text="{{ featured_album.title }} - {{ featured_album.artist }}"><img src="/images/share-icon.png" alt="Share"></a>

@@ -62,15 +62,11 @@
 			{% if album.instances is not empty %}
 				<ul id="links">
 					{% for platform, platformUrl in album.instances %}
-						<li class="platform platform-{{ platform }}">
-							<div class="veil"></div>
-							<a href="{{ platformUrl[0] }}" class="platform-regular-link">Listen &gt;</a>
-							<a href="{{ platformUrl[0] }}" target="_blank" class="platform-web-link">Listen on the web &gt;</a>
-							{% if platformUrl|length > 1 %}
-								<a href="{{ platformUrl[1] }}" class="platform-app-link">Open in app &gt;</a>
-							{% endif %}
-							<div class="logo"></div>
-						</li>
+						{% set subTemplate = 'album_link.twig' %}
+						{% if platform starts with 'steam' %}
+							{% set subTemplate = 'album_link_%s.twig'|format(platform) %}
+						{% endif %}
+						{{ include(subTemplate) }}
 					{% endfor %}
 				</ul>
 			{% endif %}

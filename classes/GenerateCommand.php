@@ -41,7 +41,9 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
             'apple_music' => 'Apple Music',
             'bandcamp' => 'Bandcamp',
             'deezer' => 'Deezer',
-            'spotify' => 'Spotify'
+            'spotify' => 'Spotify',
+            'steam_game' => 'Steam (Game only)',
+            'steam_soundtrack' => 'Steam (Soundtrack)'
         ]);
         $this->twigEnvironment->addGlobal('site_description', "Get links to your favorite original video game soundtracks on Bandcamp, Deezer, Spotify, and Apple Music.");
 

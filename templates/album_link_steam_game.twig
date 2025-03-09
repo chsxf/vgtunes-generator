@@ -1,0 +1,9 @@
+<li class="platform platform-steam">
+	<div class="veil"></div>
+	<a href="{{ platformUrl[0] }}" class="platform-regular-link">Open game &gt;</a>
+	<a href="{{ platformUrl[0] }}" target="_blank" class="platform-web-link">Game page &gt;</a>
+	{% if platformUrl|length > 1 %}
+		<a href="{{ platformUrl[1] }}" class="platform-app-link">Open in Steam &gt;</a>
+	{% endif %}
+	<div class="logo"></div>
+</li>

@@ -36,6 +36,8 @@ final class AlbumPageGenerator
                 'spotify' => ["https://open.spotify.com/album/{$platformId}", "spotify://album/{$platformId}"],
                 'apple_music' => ["https://geo.music.apple.com/album/{$platformId}", "music://music.apple.com/album/{$platformId}"],
                 'bandcamp' => [explode('|', $platformId)[1]],
+                'steam_game' => ["https://store.steampowered.com/app/{$platformId}", "steam://store/{$platformId}"],
+                'steam_soundtrack' => ["https://store.steampowered.com/app/{$platformId}", "steam://store/{$platformId}"],
                 default => [$platformId, '']
             };
         }
