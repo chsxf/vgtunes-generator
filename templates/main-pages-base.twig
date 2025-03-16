@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>VGTunes
-			{% block title %}{% endblock %}
-		</title>
+		<title>
+			{% block title %}{% endblock %}VGTunes |
+			{{ site_tagline }}</title>
 		<meta name="description" content="{{ site_description }}">
 		<link rel="preload" href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" as="style">
 		<link href="/css/main-style.css?t={{ git_hash_cache.getHash('css/main-style.css') }}" rel="stylesheet">

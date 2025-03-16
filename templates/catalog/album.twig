@@ -2,7 +2,7 @@
 
 {% set page_title = 'Album Catalog - %s'|format(catalog_key|capitalize) %}
 
-{% block title ' - %s'|format(page_title) %}
+{% block title '%s | '|format(page_title) %}
 
 {% block header %}
 	<h1 class="catalog-header">{{ page_title }}</h1>

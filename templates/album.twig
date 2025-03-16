@@ -21,7 +21,8 @@
 		<title>{{ album.title }}
 			-
 			{{ album.artist }}
-			| VGTunes</title>
+			| VGTunes |
+			{{ site_tagline }}</title>
 
 		<link rel="preload" href="/css/album-style.css?t={{ git_hash_cache.getHash('css/album-style.css') }}" as="style">
 		<link href="/css/album-style.css?t={{ git_hash_cache.getHash('css/album-style.css') }}" rel="stylesheet">
