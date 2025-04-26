@@ -24,8 +24,12 @@ final class SearchIndexGenerator
 
     private function remapAlbum(array $album, array $artistSlugs): array
     {
-        $artistIndex = array_search($album['artists'][0], $artistSlugs);
-        $result = ['t' => $album['title'], 'a' => $artistIndex];
+        $artistIndices = [];
+        foreach ($album['artists'] as $artistSlug) {
+            $artistIndices[] = array_search($artistSlug, $artistSlugs);
+        }
+
+        $result = ['t' => $album['title'], 'a' => $artistIndices];
         if ($this->includeInstances) {
             $result['i'] = $this->remapInstances($album['instances']);
         }

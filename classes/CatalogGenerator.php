@@ -31,10 +31,7 @@ final class CatalogGenerator
                 $sortKey = self::OTHERS_KEY;
             }
 
-            $buckets[$sortKey][] = array_merge($album, [
-                'artist' => $this->jsonData['artists'][$album['artists'][0]],
-                'sortable_title' => $sortableTitle
-            ]);
+            $buckets[$sortKey][] = array_merge($this->remapArtists($album), ['sortable_title' => $sortableTitle]);
         }
 
         foreach ($buckets as $key => &$albums) {
@@ -167,5 +164,15 @@ final class CatalogGenerator
         }
 
         return true;
+    }
+
+    private function remapArtists(array $album): array
+    {
+        $artists = [];
+        foreach ($album['artists'] as $artistSlug) {
+            $artists[$artistSlug] = $this->jsonData['artists'][$artistSlug];
+        }
+        $album['artists'] = $artists;
+        return $album;
     }
 }

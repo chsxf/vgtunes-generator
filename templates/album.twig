@@ -7,20 +7,20 @@
 		<meta name="description" content="Listen to this album on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
 
 		<meta property="og:site_name" content="VGTunes">
-		<meta property="og:title" content="{{ album.title }} - {{ album.artist }}">
+		<meta property="og:title" content="{{ album.title }} - {{ album.artists|join(', ') }}">
 		<meta property="og:image" content="{{ cover }}">
 		<meta property="og:url" content="{{ page_url }}">
 		<meta property="og:description" content="Listen to this album on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
 
 		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:title" content="{{ album.title }} - {{ album.artist }}">
+		<meta name="twitter:title" content="{{ album.title }} - {{ album.artists|join(', ') }}">
 		<meta name="twitter:description" content="Listen to this album on popular streaming services like Apple Music, Deezer or Spotify with links provided by VGTunes.">
 		<meta name="twitter:image" content="{{ cover }}">
 		<meta name="twitter:url" content="{{ page_url }}">
 
 		<title>{{ album.title }}
 			-
-			{{ album.artist }}
+			{{ album.artists|join(', ') }}
 			| VGTunes |
 			{{ site_tagline }}</title>
 
@@ -55,10 +55,10 @@
 			<div id="infos">
 				<h1>{{ album.title }}</h1>
 				<h2>
-					<a href="/artists/{{ album.artists[0] }}">{{ album.artist }}</a>
+					{{ include('multiple_artists.twig', { artists: album.artists }, with_context: false) }}
 				</h2>
 
-				<a href="#" class="shbtn" data-share-url="{{ page_url }}" data-share-text="{{ album.title }} - {{ album.artist }}"><img src="/images/share-icon.png" alt="Share"></a>
+				<a href="#" class="shbtn" data-share-url="{{ page_url }}" data-share-text="{{ album.title }} - {{ album.artists|join(', ') }}"><img src="/images/share-icon.png" alt="Share"></a>
 			</div>
 			{% if album.instances is not empty %}
 				<ul id="links">

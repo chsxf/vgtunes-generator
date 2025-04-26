@@ -23,12 +23,10 @@ final class ArtistPageGenerator
         }
 
         $pageUrl = $this->siteUrlBuilder->buildSiteUrl("artist/{$this->artist['slug']}/");
-        $baseCoverUrl = "https://images.vgtunes.chsxf.dev/covers/";
 
         $generatedHtml = $twigEnvironment->render('artist.twig', [
             'artist' => $this->artist,
-            'page_url' => $pageUrl,
-            'base_cover_url' => $baseCoverUrl
+            'page_url' => $pageUrl
         ]);
         return file_put_contents($this->path, $generatedHtml);
     }

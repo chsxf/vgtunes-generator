@@ -39,13 +39,17 @@ function refreshSearch(searchTerm) {
       }
     }
 
-    for (var albumSlug in searchIndex.albums) {
+    for (let albumSlug in searchIndex.albums) {
       let album = searchIndex.albums[albumSlug];
-      if (
-        album.t.toLowerCase().indexOf(searchTerm) >= 0 ||
-        foundArtistIndices.indexOf(album.a) >= 0
-      ) {
+      if (album.t.toLowerCase().indexOf(searchTerm) >= 0) {
         foundAlbumSlugs.push(albumSlug);
+      } else {
+        for (let albumArtistIndex of album.a) {
+          if (foundArtistIndices.indexOf(albumArtistIndex) >= 0) {
+            foundAlbumSlugs.push(albumSlug);
+            break;
+          }
+        }
       }
     }
 
@@ -140,7 +144,13 @@ function createAlbumResultNode(withSlug, inParentNode) {
 
   const artistSpan = document.createElement("span");
   artistSpan.classList.add("artist");
-  const artistName = searchIndex.artists[album.a][0];
+
+  var artistNames = [];
+  for (let albumArtistIndex of album.a) {
+    artistNames.push(searchIndex.artists[albumArtistIndex][0]);
+  }
+
+  const artistName = artistNames.join(", ");
   artistSpan.appendChild(document.createTextNode(artistName));
   li.appendChild(artistSpan);
 

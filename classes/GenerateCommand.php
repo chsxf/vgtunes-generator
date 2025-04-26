@@ -37,6 +37,9 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
             $this->twigEnvironment->addExtension(new DebugExtension());
         }
         $this->twigEnvironment->addGlobal('base_url', $this->currentEnvironment['base_url']);
+        $this->twigEnvironment->addGlobal('base_album_url', '/albums/');
+        $this->twigEnvironment->addGlobal('base_artist_url', '/artists/');
+        $this->twigEnvironment->addGlobal('base_cover_url', "https://images.vgtunes.chsxf.dev/covers/");
         $this->twigEnvironment->addGlobal('platform_names', [
             'apple_music' => 'Apple Music',
             'bandcamp' => 'Bandcamp',

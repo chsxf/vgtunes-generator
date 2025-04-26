@@ -16,8 +16,8 @@ final class AlbumPageGenerator
         $pageUrl = $this->siteUrlBuilder->buildSiteUrl("albums/{$this->album['slug']}/");
         $coverUrl = "https://images.vgtunes.chsxf.dev/covers/{$this->album['slug']}/cover_500.webp";
 
-        $this->album['artist'] = $this->artistMap[$this->album['artists'][0]];
         $this->album['instances'] = $this->expandInstanceLinks($this->album['instances']);
+        $this->remapArtists();
 
         $generatedHtml = $twigEnvironment->render('album.twig', [
             'album' => $this->album,
@@ -42,5 +42,14 @@ final class AlbumPageGenerator
             };
         }
         return $result;
+    }
+
+    private function remapArtists(): void
+    {
+        $artists = [];
+        foreach ($this->album['artists'] as $artistSlug) {
+            $artists[$artistSlug] = $this->artistMap[$artistSlug];
+        }
+        $this->album['artists'] = $artists;
     }
 }

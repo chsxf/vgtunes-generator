@@ -24,7 +24,7 @@
 		<link href="/css/artist-style.css?t={{ git_hash_cache.getHash('css/artist-style.css') }}" rel="stylesheet">
 		<style>
 			.with-cover-image {
-				background-image: url('{{ base_cover_url}}/{{ artist.albums[0].slug }}/cover_500.webp');
+				background-image: url('{{ base_cover_url}}{{ artist.albums[0].slug }}/cover_500.webp');
 			}
 		</style>
 

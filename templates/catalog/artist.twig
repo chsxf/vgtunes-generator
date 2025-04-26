@@ -24,7 +24,7 @@
 						<a href="/artists/{{ artist.slug }}">
 							<img src="/images/artist-silhouette.png" width="64" alt="">
 							<span class="name">{{ artist.name }}</span>
-							<span class="album_count">{{ '%d album(s) in the database'|format(artist.album_count) }}</span>
+							<span class="album_count">{{ '%d album%s in the database'|format(artist.album_count, artist.album_count > 1 ? 's' : '') }}</span>
 						</a>
 					</li>
 				{% endfor %}

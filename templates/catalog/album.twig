@@ -25,7 +25,7 @@
 						<a href="/albums/{{ album.slug }}">
 							<img src="{{ imgsrc }}" width="64" alt="Cover art">
 							<span class="title">{{ album.title}}</span>
-							<span class="artist">{{ album.artist }}</span>
+							<span class="artist">{{ album.artists|join(', ') }}</span>
 						</a>
 					</li>
 				{% endfor %}

@@ -1,0 +1,6 @@
+{% for slug, name in artists %}
+	<a href="{{ base_artist_url }}{{ slug }}/">{{ name }}</a>
+	{%- if loop.last == false -%}
+		{{- ', ' }}
+	{% endif %}
+{% endfor %}

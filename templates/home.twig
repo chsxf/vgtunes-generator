@@ -24,7 +24,7 @@
 					{% for i in half_latest_album_count..(latest_albums|length - 1) %}
 						{% with { album: latest_albums[i]} %}
 						{% set cover_url = "%s%s/cover_100.webp"|format(base_cover_url, album.slug) %}
-						<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug }}/" title="{{ album.title }} - {{ album.artist }}"></a>
+						<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug }}/" title="{{ album.title }} - {{ album.artists|join(', ') }}"></a>
 						{% endwith %}
 					{% endfor %}
 				</div>
@@ -48,21 +48,20 @@
 						<div class="blurred-cover" style="background-image: url('{{ " %s%s/cover_250.webp"|format(base_cover_url, featured_album.slug) }}')"></div>
 						<div class="featured-album-details">
 							<h2>Featured album</h2>
-							<a class="album" style="background-image: url('{{ " %s%s/cover_100.webp"|format(base_cover_url, featured_album.slug) }}')" href="{{ album_url }}" title="{{ featured_album.title }} - {{ featured_album.artist }}"></a>
+							<a class="album" style="background-image: url('{{ " %s%s/cover_100.webp"|format(base_cover_url, featured_album.slug) }}')" href="{{ album_url }}" title="{{ featured_album.title }} - {{ featured_album.artists|join(', ') }}"></a>
 							<span class="album-title album-block">
 								<a href="{{ album_url }}">{{ featured_album.title }}</a>
 							</span>
 							<span class="album-by album-block">by
 								<span class="album-artist">
-									<a href="{{ base_artist_url }}{{ featured_album.artists[0] }}/">{{ featured_album.artist }}</a>
-								</span>
+									{{ include('multiple_artists.twig', { artists: featured_album.artists }, with_context: false) }}</span>
 							</span>
 							<div class="platforms">
 								{% for platform, platformId in featured_album.instances %}
 									<img src="/images/platform-icons/{{ platform }}.png" title="{{ platform_names[platform] }}">
 								{% endfor %}
 							</div>
-							<a href="#" class="shbtn" data-share-url="{{ album_url }}" data-share-text="{{ featured_album.title }} - {{ featured_album.artist }}"><img src="/images/share-icon.png" alt="Share"></a>
+							<a href="#" class="shbtn" data-share-url="{{ album_url }}" data-share-text="{{ featured_album.title }} - {{ featured_album.artists|join(', ') }}"><img src="/images/share-icon.png" alt="Share"></a>
 						</div>
 					</section>
 				{% endif %}
@@ -102,7 +101,7 @@
 					{% for i in 0..(half_latest_album_count - 1) %}
 						{% with { album: latest_albums[i]} %}
 						{% set cover_url = "%s%s/cover_100.webp"|format(base_cover_url, album.slug) %}
-						<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug }}/" title="{{ album.title }} - {{ album.artist }}"></a>
+						<a class="album" style="background-image: url('{{ cover_url }}')" href="{{ base_album_url }}{{ album.slug }}/" title="{{ album.title }} - {{ album.artists|join(', ') }}"></a>
 						{% endwith %}
 					{% endfor %}
 				</div>
