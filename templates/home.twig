@@ -3,7 +3,21 @@
 {% block head %}
 	{{ parent() }}
 
+	<script>
+	const baseCoverURL = "{{ base_cover_url }}";
+	const baseAlbumURL = "{{ base_album_url }}";
+	const baseArtistURL = "{{ base_artist_url }}";
+
+	const platformNames = {
+		{% for platform, platformName in platform_names %}
+			{{ platform }}: '{{ platformName|e('js') }}',
+		{% endfor %}
+	};
+
+	</script>
+
 	<script src="/js/share.js?t={{ git_hash_cache.getHash('js/share.js') }}" defer></script>
+	<script src="/js/featured_album.js?t={{ git_hash_cache.getHash('js/featured_album.js') }}" defer></script>
 
 	<style>
 		#header {
@@ -43,25 +57,19 @@
 				</section>
 
 				{% if featured_album is not null %}
-					<section class="featured-album home-block">
-						{% set album_url = "%s%s/"|format(base_album_url, featured_album.slug) %}
-						<div class="blurred-cover" style="background-image: url('{{ " %s%s/cover_250.webp"|format(base_cover_url, featured_album.slug) }}')"></div>
+					<section class="featured-album home-block" id="featured-album-block" style="display: none">
+						<div class="blurred-cover"></div>
 						<div class="featured-album-details">
 							<h2>Featured album</h2>
-							<a class="album" style="background-image: url('{{ " %s%s/cover_100.webp"|format(base_cover_url, featured_album.slug) }}')" href="{{ album_url }}" title="{{ featured_album.title }} - {{ featured_album.artists|join(', ') }}"></a>
+							<a class="album"></a>
 							<span class="album-title album-block">
-								<a href="{{ album_url }}">{{ featured_album.title }}</a>
+								<a></a>
 							</span>
 							<span class="album-by album-block">by
-								<span class="album-artist">
-									{{ include('multiple_artists.twig', { artists: featured_album.artists }, with_context: false) }}</span>
+								<span class="album-artist"></span>
 							</span>
-							<div class="platforms">
-								{% for platform, platformId in featured_album.instances %}
-									<img src="/images/platform-icons/{{ platform }}.png" title="{{ platform_names[platform] }}">
-								{% endfor %}
-							</div>
-							<a href="#" class="shbtn" data-share-url="{{ album_url }}" data-share-text="{{ featured_album.title }} - {{ featured_album.artists|join(', ') }}"><img src="/images/share-icon.png" alt="Share"></a>
+							<div class="platforms"></div>
+							<a href="#" class="shbtn" style="visibility: hidden"><img src="/images/share-icon.png" alt="Share"></a>
 						</div>
 					</section>
 				{% endif %}

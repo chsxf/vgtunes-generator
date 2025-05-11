@@ -138,7 +138,7 @@ final class GenerateCommand extends AbstractCommand implements IOutputPathBuilde
                 $output->write('<info>Generating search index...</info>');
                 $searchIndexPath = $this->buildOutputPath('/searchIndex.json');
                 $prettyPrint = $this->currentEnvironment['search_index_pretty_print'] ?? $input->getOption(self::PRETTY_SEARCH_INDEX);
-                $sig = new SearchIndexGenerator($jsonData, $searchIndexPath, false, $prettyPrint);
+                $sig = new SearchIndexGenerator($jsonData, $searchIndexPath, true, $prettyPrint);
                 if (!$sig->generate()) {
                     throw new Exception("Unable to generate search index.");
                 }

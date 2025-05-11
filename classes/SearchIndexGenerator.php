@@ -36,20 +36,28 @@ final class SearchIndexGenerator
         return $result;
     }
 
-    private function remapInstances(array $instances): string
+    private function remapInstances(array $instances): array
     {
         $map = [
             'apple_music' => 'am',
+            'bandcamp' => 'b',
+            'deezer' => 'd',
             'spotify' => 's',
-            'deezer' => 'd'
+            'steam_game' => 'st',
+            'steam_soundtrack' => 'ss'
         ];
 
         $result = [];
         foreach ($map as $src => $dest) {
             if (array_key_exists($src, $instances)) {
-                $result[] = sprintf("%s:%s", $dest, $instances[$src]);
+                $result[] = $dest;
             }
         }
-        return implode('|', $result);
+
+        if (in_array('ss', $result)) {
+            $result = array_values(array_filter($result, fn($item) => $item != 'st'));
+        }
+
+        return $result;
     }
 }
