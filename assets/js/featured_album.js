@@ -1,7 +1,7 @@
 let feedRequest = new XMLHttpRequest();
 feedRequest.addEventListener("load", onFeedLoaded);
 
-const postRegex = /^the #vgtunes of the day is/i;
+const postRegex = /^the #vgtunes of the (day|week) is/i;
 
 function onFeedLoaded() {
   const feed = JSON.parse(feedRequest.responseText);
