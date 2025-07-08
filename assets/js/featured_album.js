@@ -123,7 +123,7 @@ function getFirstElementWithTagName(parentNode, tagName) {
 
 function loadBlueSkyFeed() {
   const feedDid =
-    "at://did:plc:pfrhpyiromrpkxqpa6xnuczm/app.bsky.feed.generator/vgtunes";
+    "at://did:plc:pfrhpyiromrpkxqpa6xnuczm/app.bsky.feed.generator/aaaos2avsibhw";
   const publicApiURL = `https://public.api.bsky.app/xrpc/app.bsky.feed.getFeed?feed=${encodeURI(
     feedDid
   )}&limit=5`;
