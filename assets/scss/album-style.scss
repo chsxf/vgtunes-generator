@@ -13,6 +13,8 @@ $color_deezer: #a238ff;
 $color_spotify: #1ed760;
 $color_bandcamp: #61929c;
 $color_steam: #135184;
+$color_tidal: #ffffff;
+$color_tidal2: #000;
 
 @import "https://fonts.googleapis.com/css2?family=Jost:wght@500&family=Radio+Canada:ital,wdth,wght@0,75..100,300..700;1,75..100,300..700&display=swap";
 
@@ -450,6 +452,18 @@ body.album-page {
                     }
                 }
 
+                &.platform-tidal {
+                    background-color: $color_tidal2;
+
+                    div.logo {
+                        background-image: url("../images/tidal-logo.png");
+                    }
+
+                    a {
+                        border-left-color: $color_tidal;
+                    }
+                }
+
                 a {
                     display: inline-block;
                     text-decoration: none;
@@ -590,6 +604,15 @@ body.album-page {
 
                     div.logo {
                         background-image: url("../images/steam-logo.png");
+                    }
+                }
+
+                &.platform-tidal {
+                    background-color: $color_tidal2;
+                    border-left-color: $color_tidal;
+
+                    div.logo {
+                        background-image: url("../images/tidal-logo.png");
                     }
                 }
 

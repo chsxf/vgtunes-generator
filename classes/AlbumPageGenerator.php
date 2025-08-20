@@ -38,9 +38,25 @@ final class AlbumPageGenerator
                 'bandcamp' => [explode('|', $platformId)[1]],
                 'steam_game' => ["https://store.steampowered.com/app/{$platformId}", "steam://store/{$platformId}"],
                 'steam_soundtrack' => ["https://store.steampowered.com/app/{$platformId}", "steam://store/{$platformId}"],
+                'tidal' => ["https://tidal.com/album/{$platformId}", "tidal://album/{$platformId}"],
                 default => [$platformId, '']
             };
         }
+        uksort($result, function ($keyA, $keyB) {
+            $keyAisSteam = preg_match('/^steam_(.+)$/', $keyA, $regsA) > 0;
+            $keyBisSteam = preg_match('/^steam_(.+)$/', $keyB, $regsB) > 0;
+
+            if ($keyAisSteam && $keyBisSteam) {
+                return $regsA[1] <=> $regsB[1];
+            }
+            if ($keyAisSteam) {
+                return 1;
+            }
+            if ($keyBisSteam) {
+                return -1;
+            }
+            return $keyA <=> $keyB;
+        });
         return $result;
     }
 
