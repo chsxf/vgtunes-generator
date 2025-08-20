@@ -8,6 +8,10 @@ final class ArtistPageGenerator
 
     public function __construct(private readonly ISiteUrlBuilder $siteUrlBuilder, private string $path, string $artistSlug, string $artistName, private array $albums)
     {
+        foreach ($albums as &$album) {
+            uksort($album['instances'], PlatformHelpers::sortPlatformKeys(...));
+        }
+
         $this->artist = [
             'slug' => $artistSlug,
             'name' => $artistName,

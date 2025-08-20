@@ -47,6 +47,8 @@ function expandPlatform(shortPlatform) {
       return "steam_game";
     case "ss":
       return "steam_soundtrack";
+    case "t":
+      return "tidal";
     default:
       return null;
   }

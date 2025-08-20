@@ -44,8 +44,10 @@ final class SearchIndexGenerator
             'deezer' => 'd',
             'spotify' => 's',
             'steam_game' => 'st',
-            'steam_soundtrack' => 'ss'
+            'steam_soundtrack' => 'ss',
+            'tidal' => 't'
         ];
+        uksort($map, PlatformHelpers::sortPlatformKeys(...));
 
         $result = [];
         foreach ($map as $src => $dest) {
