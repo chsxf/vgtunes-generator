@@ -12,23 +12,10 @@ final class HomeGenerator
         usort($albums, fn($a, $b) => strcmp($b['created_at'], $a['created_at']));
         $latestAlbums = array_map($this->remapArtists(...), array_slice($albums, 0, 54));
 
-        $featuredAlbum = null;
-        if (!empty($this->jsonData['featured_albums'])) {
-            $featuredSlug = $this->jsonData['featured_albums'][0]['slug'];
-
-            $matchingAlbum = array_filter($this->jsonData['albums'], fn($album) => $album['slug'] == $featuredSlug);
-            $featuredAlbum = $this->remapArtists(reset($matchingAlbum));
-
-            if (array_key_exists('steam_soundtrack', $featuredAlbum['instances'])) {
-                unset($featuredAlbum['instances']['steam_game']);
-            }
-        }
-
         $generatedHtml = $twigEnvironment->render('home.twig', [
             'latest_albums' => $latestAlbums,
             'album_count' => count($this->jsonData['albums']),
-            'artist_count' => count($this->jsonData['artists']),
-            'featured_album' => $featuredAlbum
+            'artist_count' => count($this->jsonData['artists'])
         ]);
         return file_put_contents($this->path, $generatedHtml);
     }
