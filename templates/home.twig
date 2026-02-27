@@ -56,23 +56,21 @@
 					{{ include('socials.twig', { cta: true }) }}
 				</section>
 
-				{% if featured_album is not null %}
-					<section class="featured-album home-block" id="featured-album-block" style="display: none">
-						<div class="blurred-cover"></div>
-						<div class="featured-album-details">
-							<h2>Featured album</h2>
-							<a class="album"></a>
-							<span class="album-title album-block">
-								<a></a>
-							</span>
-							<span class="album-by album-block">by
-								<span class="album-artist"></span>
-							</span>
-							<div class="platforms"></div>
-							<a href="#" class="shbtn" style="visibility: hidden"><img src="/images/share-icon.png" alt="Share"></a>
-						</div>
-					</section>
-				{% endif %}
+				<section class="featured-album home-block" id="featured-album-block" style="display: none">
+					<div class="blurred-cover"></div>
+					<div class="featured-album-details">
+						<h2>Featured album</h2>
+						<a class="album"></a>
+						<span class="album-title album-block">
+							<a></a>
+						</span>
+						<span class="album-by album-block">by
+							<span class="album-artist"></span>
+						</span>
+						<div class="platforms"></div>
+						<a href="#" class="shbtn" style="visibility: hidden"><img src="/images/share-icon.png" alt="Share"></a>
+					</div>
+				</section>
 
 				<section class=" catalogs home-block">
 					<h2>Explore the Database</h2>
