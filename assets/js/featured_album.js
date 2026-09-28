@@ -1,3 +1,5 @@
+let firstRequest = true;
+
 let feedRequest = new XMLHttpRequest();
 feedRequest.addEventListener("load", onFeedLoaded);
 
@@ -5,11 +7,19 @@ const postRegex = /^the #vgtunes of the (day|week) is/i;
 
 function onFeedLoaded() {
   const feed = JSON.parse(feedRequest.responseText);
+
+  let found = false;
   for (const feedItem of feed.feed) {
     if (postRegex.test(feedItem.post.record.text)) {
+      found = true;
       parseVGTunesOfTheDayPost(feedItem.post);
       break;
     }
+  }
+
+  if (!found && firstRequest) {
+    firstRequest = false;
+    loadBlueSkyFeed(100);
   }
 }
 
@@ -64,7 +74,7 @@ function showFeaturedAlbum(albumSlug) {
   for (const artistIndex of albumData.a) {
     const artistData = searchIndex.artists[artistIndex];
     artistArray.push(
-      `<a href="${baseArtistURL}${artistData[1]}/">${artistData[0]}</a>`
+      `<a href="${baseArtistURL}${artistData[1]}/">${artistData[0]}</a>`,
     );
     rawArtistsArray.push(artistData[0]);
   }
@@ -76,7 +86,7 @@ function showFeaturedAlbum(albumSlug) {
   const blurredCoverDiv = getFirstElementWithClassName(block, "blurred-cover");
   blurredCoverDiv.style.setProperty(
     "background-image",
-    `url('${albumCoverURL}')`
+    `url('${albumCoverURL}')`,
   );
 
   const albumImage = getFirstElementWithClassName(block, "album");
@@ -123,13 +133,8 @@ function getFirstElementWithTagName(parentNode, tagName) {
   return elements[0];
 }
 
-function loadBlueSkyFeed() {
-  const feedDid =
-    "at://did:plc:pfrhpyiromrpkxqpa6xnuczm/app.bsky.feed.generator/aaaos2avsibhw";
-  const publicApiURL = `https://public.api.bsky.app/xrpc/app.bsky.feed.getFeed?feed=${encodeURI(
-    feedDid
-  )}&limit=5`;
-
+function loadBlueSkyFeed(limit = 20) {
+  const publicApiURL = `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=chsxf.dev&limit=${limit}&filter=posts_with_media`;
   feedRequest.open("get", publicApiURL);
   feedRequest.send();
 }
